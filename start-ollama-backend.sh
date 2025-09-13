@@ -30,10 +30,10 @@ echo "📚 Installing Python dependencies..."
 pip install -r backend/requirements.txt
 
 # Start the backend server
-echo "🌐 Starting backend server on port 5001..."
-echo "📡 Backend will be available at: http://localhost:5001"
-echo "🔗 Health check: http://localhost:5001/health"
-echo "📋 API docs: http://localhost:5001/docs"
+echo "🌐 Starting backend server on port 5002..."
+echo "📡 Backend will be available at: http://localhost:5002"
+echo "🔗 Health check: http://localhost:5002/health"
+echo "📋 API docs: http://localhost:5002/docs"
 echo ""
 echo "🛑 Press Ctrl+C to stop the server"
 echo ""

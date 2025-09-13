@@ -488,6 +488,340 @@ def get_agent_metrics(agent_id):
         logger.error(f"Error getting agent metrics: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
+@app.route('/health', methods=['GET'])
+@app.route('/api/ollama/terminal', methods=['POST'])
+def ollama_terminal():
+    """Handle Ollama terminal commands"""
+    try:
+        data = request.json
+        command = data.get('command', '').strip()
+        
+        if not command:
+            return jsonify({"error": "Command is required", "success": False}), 400
+        
+        # Handle different Ollama commands
+        if command.startswith('ollama '):
+            # Remove 'ollama ' prefix for API calls
+            cmd = command[7:].strip()
+            
+            if cmd == 'list':
+                # List models
+                try:
+                    response = requests.get(f"{OLLAMA_BASE_URL}/api/tags", timeout=10)
+                    if response.status_code == 200:
+                        data = response.json()
+                        models = data.get("models", [])
+                        if not models:
+                            return jsonify({
+                                "success": True,
+                                "stdout": "No models found. Try pulling a model first with 'ollama pull <model_name>'",
+                                "stderr": ""
+                            })
+                        
+                        output_lines = ["NAME\t\t\tID\t\t\tSIZE\t\tMODIFIED"]
+                        for model in models:
+                            name = model.get("name", "")
+                            size_bytes = model.get("size", 0)
+                            # Convert size to human readable format
+                            size_gb = size_bytes / (1024**3)
+                            size_str = f"{size_gb:.1f}GB" if size_gb >= 1 else f"{size_bytes/(1024**2):.0f}MB"
+                            modified = model.get("modified_at", "")[:10]  # Just date part
+                            output_lines.append(f"{name}\t{name[:20]}...\t{size_str}\t{modified}")
+                        
+                        return jsonify({
+                            "success": True,
+                            "stdout": "\n".join(output_lines),
+                            "stderr": ""
+                        })
+                    else:
+                        return jsonify({
+                            "success": False,
+                            "error": "Failed to connect to Ollama service",
+                            "suggestion": "Make sure Ollama is running with 'ollama serve'"
+                        })
+                except requests.exceptions.ConnectionError:
+                    return jsonify({
+                        "success": False,
+                        "error": "Cannot connect to Ollama service",
+                        "suggestion": "Start Ollama with 'ollama serve' in another terminal"
+                    })
+            
+            elif cmd.startswith('pull '):
+                model_name = cmd[5:].strip()
+                if not model_name:
+                    return jsonify({
+                        "success": False,
+                        "error": "Model name is required",
+                        "suggestion": "Usage: ollama pull <model_name>"
+                    })
+                
+                try:
+                    # Start the pull request (this will be async in Ollama)
+                    response = requests.post(f"{OLLAMA_BASE_URL}/api/pull", 
+                                           json={"name": model_name}, 
+                                           timeout=30)
+                    if response.status_code == 200:
+                        return jsonify({
+                            "success": True,
+                            "stdout": f"Pulling {model_name}... This may take a while.",
+                            "stderr": ""
+                        })
+                    else:
+                        return jsonify({
+                            "success": False,
+                            "error": f"Failed to pull {model_name}",
+                            "suggestion": "Check if the model name is correct"
+                        })
+                except requests.exceptions.Timeout:
+                    return jsonify({
+                        "success": True,
+                        "stdout": f"Pull request for {model_name} started (running in background)",
+                        "stderr": ""
+                    })
+                except requests.exceptions.ConnectionError:
+                    return jsonify({
+                        "success": False,
+                        "error": "Cannot connect to Ollama service",
+                        "suggestion": "Start Ollama with 'ollama serve'"
+                    })
+            
+            elif cmd.startswith('show '):
+                model_name = cmd[5:].strip()
+                if not model_name:
+                    return jsonify({
+                        "success": False,
+                        "error": "Model name is required",
+                        "suggestion": "Usage: ollama show <model_name>"
+                    })
+                
+                try:
+                    response = requests.post(f"{OLLAMA_BASE_URL}/api/show", 
+                                           json={"name": model_name}, 
+                                           timeout=10)
+                    if response.status_code == 200:
+                        result = response.json()
+                        info_lines = [
+                            f"Model: {model_name}",
+                            f"Architecture: {result.get('details', {}).get('family', 'Unknown')}",
+                            f"Parameters: {result.get('details', {}).get('parameter_size', 'Unknown')}",
+                            f"Quantization: {result.get('details', {}).get('quantization_level', 'Unknown')}",
+                            f"Template: {result.get('template', 'Default')[:100]}..."
+                        ]
+                        return jsonify({
+                            "success": True,
+                            "stdout": "\n".join(info_lines),
+                            "stderr": ""
+                        })
+                    else:
+                        return jsonify({
+                            "success": False,
+                            "error": f"Model {model_name} not found",
+                            "suggestion": f"Try 'ollama pull {model_name}' first"
+                        })
+                except requests.exceptions.ConnectionError:
+                    return jsonify({
+                        "success": False,
+                        "error": "Cannot connect to Ollama service",
+                        "suggestion": "Start Ollama with 'ollama serve'"
+                    })
+            
+            elif cmd.startswith('run '):
+                parts = cmd[4:].strip().split(' ', 1)
+                model_name = parts[0]
+                prompt = parts[1] if len(parts) > 1 else ""
+                
+                if not model_name:
+                    return jsonify({
+                        "success": False,
+                        "error": "Model name is required",
+                        "suggestion": "Usage: ollama run <model_name> [prompt]"
+                    })
+                
+                if prompt:
+                    try:
+                        # Generate response
+                        response = requests.post(f"{OLLAMA_BASE_URL}/api/generate", 
+                                               json={
+                                                   "model": model_name,
+                                                   "prompt": prompt,
+                                                   "stream": False
+                                               }, 
+                                               timeout=60)
+                        if response.status_code == 200:
+                            result = response.json()
+                            return jsonify({
+                                "success": True,
+                                "stdout": result.get("response", ""),
+                                "stderr": ""
+                            })
+                        else:
+                            return jsonify({
+                                "success": False,
+                                "error": f"Failed to generate response with {model_name}",
+                                "suggestion": f"Make sure {model_name} is available with 'ollama list'"
+                            })
+                    except requests.exceptions.Timeout:
+                        return jsonify({
+                            "success": False,
+                            "error": "Request timed out",
+                            "suggestion": "Try a shorter prompt or a smaller model"
+                        })
+                    except requests.exceptions.ConnectionError:
+                        return jsonify({
+                            "success": False,
+                            "error": "Cannot connect to Ollama service",
+                            "suggestion": "Start Ollama with 'ollama serve'"
+                        })
+                else:
+                    return jsonify({
+                        "success": True,
+                        "stdout": f"Starting interactive session with {model_name}",
+                        "stderr": "Note: Interactive mode not fully supported in web terminal"
+                    })
+            
+            elif cmd == 'help' or cmd == '--help':
+                help_text = """Available Ollama commands:
+  ollama list                    List installed models
+  ollama pull <model>           Download a model
+  ollama show <model>           Show model information
+  ollama run <model> [prompt]   Run a model with optional prompt
+  ollama help                   Show this help message
+
+Examples:
+  ollama list
+  ollama pull llama3.2
+  ollama show llama3.2
+  ollama run llama3.2 "Hello, how are you?"
+"""
+                return jsonify({
+                    "success": True,
+                    "stdout": help_text,
+                    "stderr": ""
+                })
+            
+            else:
+                return jsonify({
+                    "success": False,
+                    "error": f"Unknown command: {cmd}",
+                    "suggestion": "Type 'ollama help' for available commands"
+                })
+        
+        else:
+            return jsonify({
+                "success": False,
+                "error": "Command must start with 'ollama'",
+                "suggestion": "Only Ollama commands are supported. Try 'ollama help'"
+            })
+            
+    except Exception as e:
+        logger.error(f"Error in terminal command: {str(e)}")
+        return jsonify({
+            "success": False,
+            "error": f"Internal server error: {str(e)}",
+            "suggestion": "Check server logs for more details"
+        })
+
+@app.route('/api/ollama/pull', methods=['POST'])
+def pull_model():
+    """Pull a model from Ollama registry"""
+    try:
+        data = request.json
+        model_name = data.get('name', '').strip()
+        
+        if not model_name:
+            return jsonify({"error": "Model name is required"}), 400
+        
+        response = requests.post(f"{OLLAMA_BASE_URL}/api/pull", 
+                               json={"name": model_name}, 
+                               timeout=60)
+        
+        if response.status_code == 200:
+            return jsonify({
+                "success": True,
+                "message": f"Successfully started pulling {model_name}"
+            })
+        else:
+            return jsonify({
+                "success": False,
+                "error": f"Failed to pull {model_name}"
+            }), 500
+            
+    except Exception as e:
+        logger.error(f"Error pulling model: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/ollama/delete', methods=['DELETE'])
+def delete_model():
+    """Delete a model"""
+    try:
+        data = request.json
+        model_name = data.get('name', '').strip()
+        
+        if not model_name:
+            return jsonify({"error": "Model name is required"}), 400
+        
+        response = requests.delete(f"{OLLAMA_BASE_URL}/api/delete", 
+                                 json={"name": model_name})
+        
+        if response.status_code == 200:
+            return jsonify({
+                "success": True,
+                "message": f"Successfully deleted {model_name}"
+            })
+        else:
+            return jsonify({
+                "success": False,
+                "error": f"Failed to delete {model_name}"
+            }), 500
+            
+    except Exception as e:
+        logger.error(f"Error deleting model: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/ollama/models/popular', methods=['GET'])
+def get_popular_models():
+    """Get popular models list"""
+    popular_models = [
+        {
+            "name": "llama3.2",
+            "description": "Meta's latest Llama model - 3.2B parameters",
+            "size": "2.0GB",
+            "category": "General"
+        },
+        {
+            "name": "llama3.2:1b",
+            "description": "Smaller Llama 3.2 model - 1.2B parameters",
+            "size": "1.3GB",
+            "category": "General"
+        },
+        {
+            "name": "mistral",
+            "description": "Mistral 7B model - excellent for coding",
+            "size": "4.1GB",
+            "category": "General"
+        },
+        {
+            "name": "phi3",
+            "description": "Microsoft's Phi-3 model - 3.8B parameters",
+            "size": "2.3GB",
+            "category": "General"
+        },
+        {
+            "name": "codellama",
+            "description": "Code-specialized Llama model",
+            "size": "3.8GB",
+            "category": "Code"
+        },
+        {
+            "name": "qwen2.5",
+            "description": "Alibaba's Qwen 2.5 model - 7.6B parameters",
+            "size": "4.7GB",
+            "category": "General"
+        }
+    ]
+    
+    return jsonify(popular_models)
+
 @app.route('/api/health', methods=['GET'])
 def health_check():
     """Health check endpoint"""
@@ -537,4 +871,4 @@ def health_check():
         }), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5052, debug=True)
+    app.run(host='0.0.0.0', port=5002, debug=True)

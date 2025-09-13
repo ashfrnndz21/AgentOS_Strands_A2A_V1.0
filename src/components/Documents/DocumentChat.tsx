@@ -57,7 +57,7 @@ export const DocumentChat: React.FC<DocumentChatProps> = ({
         const response = await fetch('/api/ollama/models');
         if (response.ok) {
           const data = await response.json();
-          const modelNames = data.models?.map((model: any) => model.name) || [];
+          const modelNames = data?.map((model: any) => model.name) || [];
           setAvailableModels(modelNames);
           
           // Set default model to first available or keep current
