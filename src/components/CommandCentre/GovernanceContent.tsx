@@ -42,7 +42,7 @@ const piiPolicySchema = z.object({
   enableAudit: z.boolean(),
 });
 
-export const GovernanceContent: React.FC<{ industry?: string }> = ({ industry = 'banking' }) => {
+export const GovernanceContent: React.FC<{ industry?: string }> = ({ industry = 'industrial' }) => {
   const [activeTab, setActiveTab] = useState("global");
   const [guardrails, setGuardrails] = useState<GuardrailType[]>(() => {
     if (industry === 'telco') {
@@ -136,8 +136,8 @@ export const GovernanceContent: React.FC<{ industry?: string }> = ({ industry = 
         },
         {
           id: "g3",
-          name: "Banking Network Data Filter",
-          description: "Project-specific filter for banking network infrastructure data",
+          name: "Industrial Network Data Filter",
+          description: "Project-specific filter for industrial network infrastructure data",
           type: "custom",
           scope: "local",
           severity: "high",
@@ -155,7 +155,7 @@ export const GovernanceContent: React.FC<{ industry?: string }> = ({ industry = 
           severity: "high",
           action: "block",
           enabled: true,
-          categories: ["Bank Account", "Billing Address", "Payment History"],
+          categories: ["Production Data", "Process Parameters", "Safety Records"],
           createdAt: "2025-04-02"
         }
       ];
@@ -311,7 +311,7 @@ export const GovernanceContent: React.FC<{ industry?: string }> = ({ industry = 
     { id: 'passport', label: 'Passport Numbers', description: 'A12345678' },
     { id: 'license', label: 'License Numbers', description: 'DL1234567' },
     { id: 'medical', label: 'Medical Information', description: 'Health records, conditions' },
-    { id: 'financial', label: 'Financial Details', description: 'Bank account numbers, financial records' },
+    { id: 'financial', label: 'Financial Details', description: 'Cost data, budget information, financial records' },
   ];
 
   const piiPolicyForm = useForm<z.infer<typeof piiPolicySchema>>({

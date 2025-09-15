@@ -4,11 +4,13 @@ import { Layout } from '@/components/Layout';
 import { useIndustry } from '@/contexts/IndustryContext';
 import { 
   QuickActions, 
-  MainTabs,
   getProjectData,
   decisionPathMetadata,
   dataLineageMetadata
 } from '@/components/CommandCentre';
+import { FixedMainTabs } from '@/components/CommandCentre/FixedMainTabs';
+
+
 import { getTelcoProjectData } from '@/components/CommandCentre/TelcoProjectData';
 
 const AgentCommand = () => {
@@ -16,7 +18,7 @@ const AgentCommand = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [selectedProject, setSelectedProject] = useState(
-    currentIndustry.id === 'telco' ? 'network-operations' : 'consumer-banking'
+    currentIndustry.id === 'telco' ? 'network-operations' : 'hydrogen-production'
   );
   const mountedRef = useRef(true);
   
@@ -27,7 +29,7 @@ const AgentCommand = () => {
 
   // Update selectedProject when industry changes to prevent undefined project data access
   React.useEffect(() => {
-    const defaultProject = currentIndustry.id === 'telco' ? 'network-operations' : 'consumer-banking';
+    const defaultProject = currentIndustry.id === 'telco' ? 'network-operations' : 'hydrogen-production';
     setSelectedProject(defaultProject);
   }, [currentIndustry.id]);
 
@@ -86,7 +88,7 @@ const AgentCommand = () => {
               </div>
             </div>
             
-            <MainTabs 
+            <FixedMainTabs 
               activeTab={activeTab}
               setActiveTab={handleTabChange}
               selectedProject={selectedProject}

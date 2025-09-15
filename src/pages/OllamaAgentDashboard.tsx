@@ -49,31 +49,86 @@ export const OllamaAgentDashboard: React.FC = () => {
       loadHealthStatus();
     }, 100);
     
-    // Refresh every 30 seconds, but only if component is still mounted
+    // Refresh every 30 seconds
     const interval = setInterval(() => {
-      // Only refresh if we're still on the page and not in a loading state
-      if (!isLoading) {
-        loadAgents();
-        loadHealthStatus();
-      }
+      loadAgents();
+      loadHealthStatus();
     }, 30000);
 
     return () => {
       clearTimeout(healthTimeout);
       clearInterval(interval);
     };
-  }, [isLoading]); // Add isLoading dependency to prevent unnecessary calls
+  }, []); // Empty dependency array - only run once on mount
 
-  const loadAgents = () => {
+  const loadAgents = async () => {
     try {
-      const allAgents = ollamaAgentService.getAllAgents();
-      setAgents(allAgents);
+      // Load agents from API instead of localStorage to sync with Strands
+      const response = await fetch('/api/agents/ollama');
+      if (response.ok) {
+        const data = await response.json();
+        const apiAgents = data.agents || [];
+        
+        // Convert API format to OllamaAgentConfig format
+        const convertedAgents: OllamaAgentConfig[] = apiAgents.map((agent: any) => ({
+          id: agent.id,
+          name: agent.name,
+          role: agent.role || '',
+          description: agent.description || '',
+          model: agent.model?.model_id || agent.model || '',
+          personality: agent.personality || '',
+          expertise: agent.expertise || '',
+          systemPrompt: agent.system_prompt || '',
+          temperature: agent.temperature || 0.7,
+          maxTokens: agent.max_tokens || 1000,
+          tools: [],
+          memory: {
+            shortTerm: false,
+            longTerm: false,
+            contextual: false
+          },
+          ragEnabled: false,
+          knowledgeBases: [],
+          guardrails: {
+            enabled: agent.guardrails?.enabled || false,
+            rules: agent.guardrails?.rules || [],
+            safetyLevel: agent.guardrails?.safetyLevel || 'medium',
+            contentFilters: agent.guardrails?.contentFilters || []
+          },
+          capabilities: {
+            conversation: true,
+            analysis: false,
+            creativity: false,
+            reasoning: false
+          },
+          behavior: {
+            response_style: 'helpful',
+            communication_tone: 'professional'
+          },
+          createdAt: agent.created_at || new Date().toISOString(),
+          updatedAt: agent.updated_at || new Date().toISOString(),
+          status: 'active'
+        }));
+        
+        setAgents(convertedAgents);
+      } else {
+        // Fallback to localStorage if API fails
+        const localAgents = ollamaAgentService.getAllAgents();
+        setAgents(localAgents);
+      }
     } catch (error) {
-      toast({
-        title: "Failed to load agents",
-        description: error instanceof Error ? error.message : 'Unknown error',
-        variant: "destructive"
-      });
+      console.error('Failed to load agents from API, falling back to localStorage:', error);
+      // Fallback to localStorage
+      try {
+        const localAgents = ollamaAgentService.getAllAgents();
+        setAgents(localAgents);
+      } catch (localError) {
+        toast({
+          title: "Failed to load agents",
+          description: localError instanceof Error ? localError.message : 'Unknown error',
+          variant: "destructive"
+        });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -88,22 +143,70 @@ export const OllamaAgentDashboard: React.FC = () => {
     }
   };
 
-  const handleAgentCreated = (agent: OllamaAgentConfig) => {
-    setAgents(prev => [...prev, agent]);
+  const handleAgentCreated = async (agent: OllamaAgentConfig) => {
+    try {
+      // Create agent in API database to sync with Strands
+      const response = await fetch('/api/agents/ollama', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: agent.name,
+          role: agent.role,
+          description: agent.description,
+          systemPrompt: agent.systemPrompt,
+          model: agent.model,
+          temperature: agent.temperature,
+          maxTokens: agent.maxTokens,
+          guardrails: agent.guardrails
+        })
+      });
+
+      if (response.ok) {
+        // Reload agents from API to get the latest data
+        await loadAgents();
+        toast({
+          title: "Agent Created",
+          description: `${agent.name} is ready to use and synced with Strands!`,
+        });
+      } else {
+        // Fallback to local creation
+        setAgents(prev => [...prev, agent]);
+        toast({
+          title: "Agent Created Locally",
+          description: `${agent.name} is ready to use (local only)!`,
+          variant: "default"
+        });
+      }
+    } catch (error) {
+      console.error('Failed to create agent in API, using local only:', error);
+      // Fallback to local creation
+      setAgents(prev => [...prev, agent]);
+      toast({
+        title: "Agent Created Locally",
+        description: `${agent.name} is ready to use (local only)!`,
+        variant: "default"
+      });
+    }
+
     // Refresh metrics after agent creation
     setTimeout(() => {
       loadHealthStatus();
     }, 500);
-    toast({
-      title: "Agent Created",
-      description: `${agent.name} is ready to use!`,
-    });
   };
 
   const handleDeleteAgent = async (agentId: string) => {
     try {
-      const success = await ollamaAgentService.deleteAgent(agentId);
-      if (success) {
+      // Delete from API database first to sync with Strands
+      const apiResponse = await fetch(`/api/agents/ollama/${agentId}`, {
+        method: 'DELETE'
+      });
+
+      // Also delete from localStorage
+      const localSuccess = await ollamaAgentService.deleteAgent(agentId);
+
+      if (apiResponse.ok || localSuccess) {
         setAgents(prev => prev.filter(agent => agent.id !== agentId));
         if (selectedAgent?.id === agentId) {
           setSelectedAgent(null);
@@ -115,7 +218,7 @@ export const OllamaAgentDashboard: React.FC = () => {
         }, 500);
         toast({
           title: "Agent Deleted",
-          description: "Agent has been removed successfully",
+          description: "Agent has been removed successfully from both local and API storage",
         });
       }
     } catch (error) {
@@ -358,10 +461,10 @@ export const OllamaAgentDashboard: React.FC = () => {
 
                           {/* Features */}
                           <div className="flex flex-wrap gap-1">
-                            {agent.memory.shortTerm && <Badge variant="outline" className="text-xs">Short Memory</Badge>}
-                            {agent.memory.longTerm && <Badge variant="outline" className="text-xs">Long Memory</Badge>}
+                            {agent.memory?.shortTerm && <Badge variant="outline" className="text-xs">Short Memory</Badge>}
+                            {agent.memory?.longTerm && <Badge variant="outline" className="text-xs">Long Memory</Badge>}
                             {agent.ragEnabled && <Badge variant="outline" className="text-xs">RAG</Badge>}
-                            {agent.guardrails.enabled && <Badge variant="outline" className="text-xs">Guardrails</Badge>}
+                            {agent.guardrails?.enabled && <Badge variant="outline" className="text-xs">Guardrails</Badge>}
                           </div>
 
                           {/* Metrics */}

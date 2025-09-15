@@ -129,6 +129,44 @@ class ApiClient {
       method: 'DELETE'
     });
   }
+
+  // ===== STRANDS API METHODS =====
+  
+  // Strands Agents
+  async getStrandsAgents() {
+    return this.request('/api/strands/agents');
+  }
+
+  // Strands Workflows
+  async createStrandsWorkflow(workflowData: any) {
+    return this.request('/api/strands/workflows', {
+      method: 'POST',
+      body: JSON.stringify(workflowData)
+    });
+  }
+
+  async executeStrandsWorkflow(workflowId: string, input: any) {
+    return this.request(`/api/strands/workflows/${workflowId}/execute`, {
+      method: 'POST',
+      body: JSON.stringify({ input })
+    });
+  }
+
+  async getStrandsWorkflowStatus(workflowId: string) {
+    return this.request(`/api/strands/workflows/${workflowId}/status`);
+  }
+
+  // Strands Tools
+  async getStrandsTools() {
+    return this.request('/api/strands/tools');
+  }
+
+  async executeStrandsTool(toolName: string, params: any, context?: any) {
+    return this.request(`/api/strands/tools/${toolName}/execute`, {
+      method: 'POST',
+      body: JSON.stringify({ params, context })
+    });
+  }
 }
 
 export const apiClient = new ApiClient();

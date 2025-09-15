@@ -24,59 +24,47 @@ import { Checkbox } from "@/components/ui/checkbox";
 const costData = [
   {
     month: 'Jan',
-    'Network Capex': 124,
-    'Customer Lifetime': 85,
-    'Sales & Service': 42,
-    'Customer Experience': 73,
-    'HR Analytics': 53,
+    'Hydrogen Production': 124,
+    'Financial Forecasting': 85,
+    'Process Engineering': 42,
   },
   {
     month: 'Feb',
-    'Network Capex': 137,
-    'Customer Lifetime': 77,
-    'Sales & Service': 50,
-    'Customer Experience': 63,
-    'HR Analytics': 48,
+    'Hydrogen Production': 137,
+    'Financial Forecasting': 77,
+    'Process Engineering': 50,
   },
   {
     month: 'Mar',
-    'Network Capex': 129,
-    'Customer Lifetime': 90,
-    'Sales & Service': 56,
-    'Customer Experience': 81,
-    'HR Analytics': 59,
+    'Hydrogen Production': 129,
+    'Financial Forecasting': 90,
+    'Process Engineering': 56,
   },
   {
     month: 'Apr',
-    'Network Capex': 142,
-    'Customer Lifetime': 103,
-    'Sales & Service': 65,
-    'Customer Experience': 89,
-    'HR Analytics': 62,
+    'Hydrogen Production': 142,
+    'Financial Forecasting': 103,
+    'Process Engineering': 65,
   },
   {
     month: 'May',
-    'Network Capex': 158,
-    'Customer Lifetime': 118,
-    'Sales & Service': 72,
-    'Customer Experience': 94,
-    'HR Analytics': 68,
+    'Hydrogen Production': 158,
+    'Financial Forecasting': 118,
+    'Process Engineering': 72,
   },
   {
     month: 'Jun',
-    'Network Capex': 146,
-    'Customer Lifetime': 110,
-    'Sales & Service': 80,
-    'Customer Experience': 86,
-    'HR Analytics': 65,
+    'Hydrogen Production': 146,
+    'Financial Forecasting': 110,
+    'Process Engineering': 80,
   },
 ];
 
 const allAgentCostData = [
   { 
     id: 1, 
-    name: 'Investment Analyzer', 
-    project: 'Network Capex', 
+    name: 'Electrolysis Process Agent', 
+    project: 'Hydrogen Production', 
     model: 'GPT-4o', 
     dailyInferences: 245, 
     monthlyCost: 127.40,
@@ -84,63 +72,63 @@ const allAgentCostData = [
   },
   { 
     id: 2, 
-    name: 'Customer Insights Agent', 
-    project: 'Customer Lifetime', 
-    model: 'Claude 3 Sonnet', 
+    name: 'Production Planning Agent', 
+    project: 'Hydrogen Production', 
+    model: 'Claude 3 Opus', 
     dailyInferences: 187, 
     monthlyCost: 98.65,
     costTrend: 'down' 
   },
   { 
     id: 3, 
-    name: 'Sales Assistant', 
-    project: 'Sales & Service', 
-    model: 'Nova Pro', 
+    name: 'Strategic Finance Analyst', 
+    project: 'Financial Forecasting', 
+    model: 'GPT-4o', 
     dailyInferences: 156, 
     monthlyCost: 62.40,
     costTrend: 'up' 
   },
   { 
     id: 4, 
-    name: 'Experience Optimizer', 
-    project: 'Customer Experience', 
-    model: 'GPT-4o Mini', 
+    name: 'Market Intelligence Agent', 
+    project: 'Financial Forecasting', 
+    model: 'Claude 3 Opus', 
     dailyInferences: 203, 
     monthlyCost: 81.20,
     costTrend: 'down' 
   },
   { 
     id: 5, 
-    name: 'Talent Manager', 
-    project: 'HR Analytics', 
-    model: 'Nova Lite', 
+    name: 'Portfolio Optimization Agent', 
+    project: 'Process Engineering', 
+    model: 'GPT-4o', 
     dailyInferences: 129, 
     monthlyCost: 51.60,
     costTrend: 'up' 
   },
   { 
     id: 6, 
-    name: 'Investment Forecaster', 
-    project: 'Network Capex', 
-    model: 'Claude 3 Opus', 
+    name: 'Quality Control Agent', 
+    project: 'Hydrogen Production', 
+    model: 'Llama 3 70B', 
     dailyInferences: 178, 
     monthlyCost: 103.80,
     costTrend: 'down' 
   },
   { 
     id: 7, 
-    name: 'Customer Retention Agent', 
-    project: 'Customer Lifetime', 
-    model: 'GPT-4o', 
+    name: 'Geopolitical Risk Agent', 
+    project: 'Financial Forecasting', 
+    model: 'GPT-4 Turbo', 
     dailyInferences: 195, 
     monthlyCost: 85.30,
     costTrend: 'up' 
   },
   { 
     id: 8, 
-    name: 'Support Agent', 
-    project: 'Sales & Service', 
-    model: 'Claude 3 Sonnet', 
+    name: 'Safety Monitoring Agent', 
+    project: 'Hydrogen Production', 
+    model: 'GPT-4o', 
     dailyInferences: 220, 
     monthlyCost: 68.90,
     costTrend: 'down' 
@@ -148,19 +136,15 @@ const allAgentCostData = [
 ];
 
 const colorMap = {
-  'Network Capex': '#4338ca',
-  'Customer Lifetime': '#8b5cf6',
-  'Sales & Service': '#10b981',
-  'Customer Experience': '#f59e0b',
-  'HR Analytics': '#ec4899',
+  'Hydrogen Production': '#4338ca',
+  'Financial Forecasting': '#8b5cf6',
+  'Process Engineering': '#10b981',
 };
 
 const projectDisplayNames = {
-  'network-capex': 'Network Capex',
-  'customer-lifetime': 'Customer Lifetime',
-  'sales-service-ai': 'Sales & Service',
-  'customer-experience': 'Customer Experience',
-  'hr-analytics': 'HR Analytics',
+  'hydrogen-production': 'Hydrogen Production',
+  'industrial-forecasting': 'Financial Forecasting',
+  'process-engineering': 'Process Engineering',
 };
 
 interface CostContentProps {
@@ -172,8 +156,8 @@ export const CostContent: React.FC<CostContentProps> = ({
   selectedProject: externalSelectedProject,
   setSelectedProject: externalSetSelectedProject
 }) => {
-  const [internalSelectedProject, setInternalSelectedProject] = useState<string>('network-capex');
-  const [selectedProjects, setSelectedProjects] = useState<string[]>(['network-capex']);
+  const [internalSelectedProject, setInternalSelectedProject] = useState<string>('hydrogen-production');
+  const [selectedProjects, setSelectedProjects] = useState<string[]>(['hydrogen-production']);
   const [showAllProjects, setShowAllProjects] = useState<boolean>(true);
   
   const selectedProject = externalSelectedProject || internalSelectedProject;
@@ -354,11 +338,9 @@ export const CostContent: React.FC<CostContentProps> = ({
           <div className="h-80">
             <ChartContainer
               config={{
-                'Network Capex': { color: colorMap['Network Capex'] },
-                'Customer Lifetime': { color: colorMap['Customer Lifetime'] },
-                'Sales & Service': { color: colorMap['Sales & Service'] },
-                'Customer Experience': { color: colorMap['Customer Experience'] },
-                'HR Analytics': { color: colorMap['HR Analytics'] },
+                'Hydrogen Production': { color: colorMap['Hydrogen Production'] },
+                'Financial Forecasting': { color: colorMap['Financial Forecasting'] },
+                'Process Engineering': { color: colorMap['Process Engineering'] },
               }}
             >
               <ResponsiveContainer width="100%" height="100%">
@@ -368,20 +350,14 @@ export const CostContent: React.FC<CostContentProps> = ({
                   <YAxis stroke="#888" />
                   <Tooltip content={<CustomTooltip />} />
                   <Legend />
-                  {showAllProjects || selectedProjects.includes('network-capex') ? (
-                    <Bar dataKey="Network Capex" fill={colorMap['Network Capex']} />
+                  {showAllProjects || selectedProjects.includes('hydrogen-production') ? (
+                    <Bar dataKey="Hydrogen Production" fill={colorMap['Hydrogen Production']} />
                   ) : null}
-                  {showAllProjects || selectedProjects.includes('customer-lifetime') ? (
-                    <Bar dataKey="Customer Lifetime" fill={colorMap['Customer Lifetime']} />
+                  {showAllProjects || selectedProjects.includes('industrial-forecasting') ? (
+                    <Bar dataKey="Financial Forecasting" fill={colorMap['Financial Forecasting']} />
                   ) : null}
-                  {showAllProjects || selectedProjects.includes('sales-service-ai') ? (
-                    <Bar dataKey="Sales & Service" fill={colorMap['Sales & Service']} />
-                  ) : null}
-                  {showAllProjects || selectedProjects.includes('customer-experience') ? (
-                    <Bar dataKey="Customer Experience" fill={colorMap['Customer Experience']} />
-                  ) : null}
-                  {showAllProjects || selectedProjects.includes('hr-analytics') ? (
-                    <Bar dataKey="HR Analytics" fill={colorMap['HR Analytics']} />
+                  {showAllProjects || selectedProjects.includes('process-engineering') ? (
+                    <Bar dataKey="Process Engineering" fill={colorMap['Process Engineering']} />
                   ) : null}
                 </BarChart>
               </ResponsiveContainer>

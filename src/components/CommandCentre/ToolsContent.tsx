@@ -165,56 +165,108 @@ export const ToolsContent: React.FC<{ industry?: string }> = ({ industry = 'bank
           category: 'ai-agents',
           icon: Database
         },
-        // Banking-specific tools
-        {
-          id: 'kyc-processor',
-          name: 'KYC Document Processor',
-          description: 'Automated Know Your Customer document verification',
-          category: 'data',
-          icon: Database
-        },
-        {
-          id: 'fraud-detection',
-          name: 'Banking Fraud Detection',
-          description: 'Real-time fraud detection for banking transactions',
-          category: 'analytics',
-          icon: BarChart2
-        },
-        {
-          id: 'credit-scorer',
-          name: 'Credit Risk Scorer',
-          description: 'AI-powered credit risk assessment and scoring',
-          category: 'analytics',
-          icon: BarChart2
-        },
-        {
-          id: 'compliance-checker',
-          name: 'Regulatory Compliance Checker',
-          description: 'Automated compliance verification for banking regulations',
-          category: 'integration',
-          icon: Cable
-        },
-        {
-          id: 'transaction-analyzer',
-          name: 'Transaction Pattern Analyzer',
-          description: 'Analyze customer transaction patterns and behaviors',
-          category: 'data',
-          icon: Database
-        },
-        {
-          id: 'loan-processor',
-          name: 'Loan Application Processor',
-          description: 'Automated loan application processing and evaluation',
-          category: 'data',
-          icon: Database
-        },
-        {
-          id: 'api-gateway',
-          name: 'Banking API Gateway',
-          description: 'Centralized API management for banking service integrations',
-          category: 'integration',
-          icon: Cable
-        },
+        // Industry-specific tools
+        ...(industry === 'banking' ? [
+          {
+            id: 'kyc-processor',
+            name: 'KYC Document Processor',
+            description: 'Automated Know Your Customer document verification',
+            category: 'data',
+            icon: Database
+          },
+          {
+            id: 'fraud-detection',
+            name: 'Banking Fraud Detection',
+            description: 'Real-time fraud detection for banking transactions',
+            category: 'analytics',
+            icon: BarChart2
+          },
+          {
+            id: 'credit-scorer',
+            name: 'Credit Risk Scorer',
+            description: 'AI-powered credit risk assessment and scoring',
+            category: 'analytics',
+            icon: BarChart2
+          },
+          {
+            id: 'compliance-checker',
+            name: 'Regulatory Compliance Checker',
+            description: 'Automated compliance verification for banking regulations',
+            category: 'integration',
+            icon: Cable
+          },
+          {
+            id: 'transaction-analyzer',
+            name: 'Transaction Pattern Analyzer',
+            description: 'Analyze customer transaction patterns and behaviors',
+            category: 'data',
+            icon: Database
+          },
+          {
+            id: 'loan-processor',
+            name: 'Loan Application Processor',
+            description: 'Automated loan application processing and evaluation',
+            category: 'data',
+            icon: Database
+          },
+          {
+            id: 'api-gateway',
+            name: 'Banking API Gateway',
+            description: 'Centralized API management for banking service integrations',
+            category: 'integration',
+            icon: Cable
+          }
+        ] : industry === 'industrial' ? [
+          {
+            id: 'process-optimizer',
+            name: 'Process Optimization Engine',
+            description: 'Optimize industrial processes for efficiency and safety',
+            category: 'data',
+            icon: Database
+          },
+          {
+            id: 'safety-monitor',
+            name: 'Industrial Safety Monitor',
+            description: 'Real-time safety monitoring for industrial operations',
+            category: 'analytics',
+            icon: BarChart2
+          },
+          {
+            id: 'quality-analyzer',
+            name: 'Quality Control Analyzer',
+            description: 'AI-powered quality assessment and control systems',
+            category: 'analytics',
+            icon: BarChart2
+          },
+          {
+            id: 'compliance-checker',
+            name: 'Environmental Compliance Checker',
+            description: 'Automated compliance verification for environmental regulations',
+            category: 'integration',
+            icon: Cable
+          },
+          {
+            id: 'production-analyzer',
+            name: 'Production Pattern Analyzer',
+            description: 'Analyze production patterns and optimize workflows',
+            category: 'data',
+            icon: Database
+          },
+          {
+            id: 'maintenance-scheduler',
+            name: 'Predictive Maintenance Scheduler',
+            description: 'AI-powered predictive maintenance scheduling and optimization',
+            category: 'data',
+            icon: Database
+          },
+          {
+            id: 'api-gateway',
+            name: 'Industrial API Gateway',
+            description: 'Centralized API management for industrial system integrations',
+            category: 'integration',
+            icon: Cable
+          }
+        ] : []),
         {
           id: 'customer-insights',
           name: 'Customer Financial Insights',
@@ -263,7 +315,7 @@ export const ToolsContent: React.FC<{ industry?: string }> = ({ industry = 'bank
           <div>
             <h2 className="text-xl font-medium text-white">Agent Tools</h2>
             <p className="text-gray-300 text-sm">
-              Specialized tools for AI agents and {industry === 'telco' ? 'telecom operations' : 'banking operations'}
+              Specialized tools for AI agents and {industry === 'telco' ? 'telecom operations' : industry === 'industrial' ? 'industrial operations' : industry === 'banking' ? 'banking operations' : 'operations'}
             </p>
           </div>
         </div>
@@ -287,9 +339,9 @@ export const ToolsContent: React.FC<{ industry?: string }> = ({ industry = 'bank
             </DialogTrigger>
             <DialogContent className="bg-beam-dark-accent border-gray-700 text-white">
               <DialogHeader>
-                <DialogTitle>Add New {industry === 'telco' ? 'Telecom' : 'Banking'} Tool</DialogTitle>
+                <DialogTitle>Add New {industry === 'telco' ? 'Telecom' : industry === 'industrial' ? 'Industrial' : industry === 'banking' ? 'Banking' : 'Banking'} Tool</DialogTitle>
                 <DialogDescription className="text-gray-400">
-                  Add a new tool for your agent to use in {industry === 'telco' ? 'telecom' : 'banking'} operations.
+                  Add a new tool for your agent to use in {industry === 'telco' ? 'telecom' : industry === 'industrial' ? 'industrial' : industry === 'banking' ? 'banking' : 'banking'} operations.
                 </DialogDescription>
               </DialogHeader>
               

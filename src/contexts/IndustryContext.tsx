@@ -39,24 +39,22 @@ const industryConfigurations: IndustryConfig[] = [
   {
     id: 'banking',
     name: 'banking',
-    displayName: 'AWS Banking Agent OS',
-    description: 'Comprehensive banking operations and customer management',
+    displayName: 'Banking Agent OS',
+    description: 'Financial services and banking operations powered by AI',
     logo: 'https://aws.amazon.com/favicon.ico',
-    primaryColor: 'hsl(358, 75%, 45%)', // true-red
+    primaryColor: 'hsl(358, 75%, 45%)', // banking red
     accentColor: 'hsl(358, 75%, 35%)',
     gradientBg: 'linear-gradient(145deg, #000000 0%, #E31E24 50%, #FFFFFF 100%)',
     borderColor: 'hsl(358, 75%, 45% / 0.3)',
     navigation: [
-      { path: '/', label: 'Dashboard', icon: 'Command' },
-      { path: '/agent-command', label: 'Agent Command Centre', icon: 'Command' },
-      { path: '/agents', label: 'AI Agents', icon: 'Bot' },
-      { path: '/multi-agent-workspace', label: 'Multi Agent Workspace', icon: 'Bot' },
+      { path: '/', label: 'Banking Dashboard', icon: 'Command' },
+      { path: '/agent-command', label: 'Banking Command Centre', icon: 'Command' },
+      { path: '/multi-agent-workspace', label: 'Banking Workspace', icon: 'Bot' },
       { path: '/mcp-dashboard', label: 'MCP Gateway', icon: 'Server' },
-      { path: '/agent-exchange', label: 'AI Marketplace', icon: 'ShoppingBag' },
+      { path: '/agent-exchange', label: 'Financial Solutions', icon: 'ShoppingBag' },
       { path: '/risk-analytics', label: 'Risk Analytics', icon: 'TrendingUp' },
       { path: '/wealth-management', label: 'Wealth Management', icon: 'TrendingUp' },
       { path: '/customer-insights', label: 'Customer Insights', icon: 'Users' },
-      { path: '/agent-control', label: 'Agent Control Panel', icon: 'Activity' },
       { path: '/system-flow', label: 'AgentOS Architecture Blueprint', icon: 'Network' },
       { path: '/settings', label: 'Settings', icon: 'Settings' }
     ],
@@ -85,11 +83,9 @@ const industryConfigurations: IndustryConfig[] = [
       { path: '/agent-command', label: 'Agent Command Centre', icon: 'Command' },
       { path: '/agent-exchange', label: 'Agent Marketplace', icon: 'ShoppingBag' },
       { path: '/multi-agent-workspace', label: 'Multi Agent Orchestration', icon: 'Bot' },
-      { path: '/agents', label: 'Network Agents', icon: 'Bot' },
       { path: '/mcp-dashboard', label: 'MCP Gateway', icon: 'Server' },
       { path: '/network-twin', label: 'Network Twin', icon: 'Globe' },
       { path: '/customer-analytics', label: 'Customer Analytics', icon: 'Users' },
-      { path: '/agent-control', label: 'Agent Control Panel', icon: 'Activity' },
       { path: '/system-flow', label: 'AgentOS Architecture Blueprint', icon: 'Network' },
       { path: '/settings', label: 'Settings', icon: 'Settings' }
     ],
@@ -116,7 +112,6 @@ const industryConfigurations: IndustryConfig[] = [
     navigation: [
       { path: '/', label: 'Health Dashboard', icon: 'Command' },
       { path: '/agent-command', label: 'Care Command Centre', icon: 'Command' },
-      { path: '/agents', label: 'Healthcare Agents', icon: 'Bot' },
       { path: '/multi-agent-workspace', label: 'Care Orchestration', icon: 'Bot' },
       { path: '/mcp-dashboard', label: 'MCP Gateway', icon: 'Server' },
       { path: '/agent-exchange', label: 'Health Solutions', icon: 'ShoppingBag' },
@@ -132,6 +127,67 @@ const industryConfigurations: IndustryConfig[] = [
         description: 'Comprehensive patient care with specialized agents',
         agents: ['Care Coordinator', 'Diagnostic Assistant', 'Treatment Planner', 'Medication Manager', 'Wellness Coach', 'Emergency Responder'],
         workflows: ['Care Coordination', 'Diagnosis Support', 'Treatment Planning', 'Medication Management', 'Wellness Monitoring', 'Emergency Response']
+      }
+    ]
+  },
+  {
+    id: 'industrial',
+    name: 'industrial',
+    displayName: 'Air Liquide Agent OS',
+    description: 'Industrial gas and technology operations powered by AI',
+    logo: 'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQwIDUwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxjaXJjbGUgY3g9IjI1IiBjeT0iMjUiIHI9IjIyIiBmaWxsPSIjNEE2RkE1Ii8+PHBhdGggZD0iTTE1IDMyIFExNSAxOCAyNSAxOCBRMzUgMTggMzUgMzIgTDMxIDMyIFEzMSAyMiAyNSAyMiBRMTkgMjIgMTkgMzIgWiIgZmlsbD0id2hpdGUiLz48dGV4dCB4PSI1OCIgeT0iMzUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyMCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNEQzE0M0MiIGxldHRlci1zcGFjaW5nPSIwLjVweCI+QWlyIExpcXVpZGU8L3RleHQ+PC9zdmc+',
+    primaryColor: 'hsl(220, 70%, 55%)', // Air Liquide blue
+    accentColor: 'hsl(0, 70%, 55%)', // Air Liquide red
+    gradientBg: 'linear-gradient(145deg, #000000 0%, #4A90E2 50%, #E53E3E 100%)',
+    borderColor: 'hsl(220, 70%, 55% / 0.3)',
+    navigation: [
+      { path: '/', label: 'Industrial Dashboard', icon: 'Command' },
+      { path: '/agent-command', label: 'Operations Command Centre', icon: 'Command' },
+      { path: '/multi-agent-workspace', label: 'Industrial Orchestration', icon: 'Bot' },
+      { path: '/mcp-dashboard', label: 'MCP Gateway', icon: 'Server' },
+      { path: '/agent-exchange', label: 'Industrial Solutions', icon: 'ShoppingBag' },
+      { path: '/procurement-analytics', label: 'Procurement Analytics', icon: 'TrendingUp' },
+      { path: '/safety-monitoring', label: 'Safety Monitoring', icon: 'Shield' },
+      { path: '/rd-discovery', label: 'R&D Discovery', icon: 'FlaskConical' },
+      { path: '/talent-management', label: 'Talent Management', icon: 'Users' },
+      { path: '/system-flow', label: 'AgentOS Architecture Blueprint', icon: 'Network' },
+      { path: '/settings', label: 'Settings', icon: 'Settings' }
+    ],
+    workflows: [
+      {
+        id: 'industrial-procurement',
+        name: 'Agentic Procurement & Supply Chain',
+        description: 'Autonomous supply chain management with supplier research and risk monitoring',
+        agents: ['Supplier Research Agent', 'RFP Generation Agent', 'Contract Negotiation Agent', 'Risk Monitoring Agent', 'Logistics Coordinator', 'Quality Assurance Agent', 'Cost Optimization Agent'],
+        workflows: ['Supplier Discovery', 'RFP Creation', 'Contract Negotiation', 'Risk Assessment', 'Logistics Management', 'Quality Control', 'Cost Analysis']
+      },
+      {
+        id: 'industrial-forecasting',
+        name: 'Financial Forecasting & Scenario Analysis',
+        description: 'Real-time financial forecasting with multi-source data integration and scenario modeling',
+        agents: ['Market Intelligence Agent', 'Financial Forecasting Agent', 'Scenario Analysis Agent', 'Risk Assessment Agent', 'Economic Indicator Agent', 'Project Finance Agent'],
+        workflows: ['Market Analysis', 'Financial Modeling', 'Scenario Planning', 'Risk Evaluation', 'Economic Monitoring', 'Project Valuation']
+      },
+      {
+        id: 'industrial-recruitment',
+        name: 'Talent Management & Recruitment',
+        description: 'End-to-end talent lifecycle management with AI-powered screening and development',
+        agents: ['Talent Sourcing Agent', 'Resume Screening Agent', 'Interview Coordinator', 'Onboarding Assistant', 'Career Development Agent'],
+        workflows: ['Talent Discovery', 'Candidate Screening', 'Interview Management', 'Employee Onboarding', 'Career Planning']
+      },
+      {
+        id: 'industrial-rd',
+        name: 'R&D Materials Discovery',
+        description: 'Accelerated materials discovery with academic research analysis and digital twin simulation',
+        agents: ['Literature Mining Agent', 'Patent Research Agent', 'Digital Twin Simulator', 'Compound Analysis Agent', 'Lab Optimization Agent', 'Innovation Tracker'],
+        workflows: ['Research Mining', 'Patent Analysis', 'Digital Simulation', 'Material Testing', 'Lab Coordination', 'Innovation Tracking']
+      },
+      {
+        id: 'industrial-safety',
+        name: 'Safety & Predictive Maintenance',
+        description: 'Multi-modal safety monitoring with predictive maintenance and autonomous response',
+        agents: ['Safety Monitor Agent', 'Predictive Maintenance Agent', 'Equipment Diagnostics Agent', 'Emergency Response Agent', 'Compliance Checker', 'Maintenance Scheduler', 'Risk Predictor', 'Alert Coordinator'],
+        workflows: ['Safety Monitoring', 'Predictive Analysis', 'Equipment Diagnostics', 'Emergency Response', 'Compliance Tracking', 'Maintenance Planning', 'Risk Prediction', 'Alert Management']
       }
     ]
   }
@@ -154,25 +210,39 @@ interface IndustryProviderProps {
 export const IndustryProvider: React.FC<IndustryProviderProps> = ({ children }) => {
   // Initialize with custom configuration if available
   const getInitialIndustry = (): IndustryConfig => {
+    // Force Air Liquide industrial configuration as default
+    const industrialConfig = industryConfigurations.find(config => config.id === 'industrial');
+    if (!industrialConfig) {
+      console.error('Industrial configuration not found, falling back to first config');
+      return industryConfigurations[0];
+    }
+    
+    // Clear any cached healthcare/telco configurations
     try {
       const savedConfig = localStorage.getItem('industryConfig');
       if (savedConfig) {
         const parsed = JSON.parse(savedConfig);
-        // Validate that the parsed config has required properties
-        if (parsed.id && parsed.name && parsed.displayName) {
+        // Only use saved config if it's the industrial one
+        if (parsed.id === 'industrial' && parsed.name && parsed.displayName) {
           return parsed;
+        } else {
+          // Clear non-industrial cached configs
+          localStorage.removeItem('industryConfig');
         }
       }
     } catch (error) {
       console.warn('Failed to load saved industry config:', error);
+      localStorage.removeItem('industryConfig');
     }
     
-    // Fallback to default with custom logo if available
-    const defaultIndustry = { ...industryConfigurations[0] };
+    const defaultIndustry = { ...industrialConfig };
     const customLogo = localStorage.getItem('customLogo');
     if (customLogo) {
       defaultIndustry.logo = customLogo;
     }
+    
+    // Save the industrial config to localStorage
+    localStorage.setItem('industryConfig', JSON.stringify(defaultIndustry));
     
     return defaultIndustry;
   };

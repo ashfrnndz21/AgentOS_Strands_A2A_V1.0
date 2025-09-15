@@ -23,6 +23,15 @@ const getBankingCategories = () => [
   { id: 'analytics', name: 'Analytics & Reporting', icon: BarChart2 },
 ];
 
+const getIndustrialCategories = () => [
+  { id: 'production', name: 'Production Data', icon: Users },
+  { id: 'quality', name: 'Quality Control', icon: CreditCard },
+  { id: 'safety', name: 'Safety Monitoring', icon: DollarSign },
+  { id: 'maintenance', name: 'Maintenance & Assets', icon: Building2 },
+  { id: 'compliance', name: 'Environmental Compliance', icon: Shield },
+  { id: 'analytics', name: 'Process Analytics', icon: BarChart2 },
+];
+
 const getTelcoCategories = () => [
   { id: 'network', name: 'Network Infrastructure', icon: Database },
   { id: 'customer', name: 'Customer Data', icon: Users },
@@ -42,7 +51,7 @@ const ACCESS_LEVELS = [
 
 export const DataAccessContent: React.FC<{ industry?: string }> = ({ industry = 'banking' }) => {
   // Get the appropriate categories based on industry
-  const DATABASE_CATEGORIES = industry === 'telco' ? getTelcoCategories() : getBankingCategories();
+  const DATABASE_CATEGORIES = industry === 'telco' ? getTelcoCategories() : industry === 'banking' ? getBankingCategories() : getIndustrialCategories();
   
   // Industry-specific data sources
   const getInitialDataSources = () => {
@@ -123,9 +132,9 @@ export const DataAccessContent: React.FC<{ industry?: string }> = ({ industry = 
         },
         {
           id: 2,
-          name: 'Core Banking System',
-          type: 'Legacy Database',
-          category: 'accounts',
+          name: industry === 'banking' ? 'Core Banking System' : 'Production Control System',
+          type: industry === 'banking' ? 'Legacy Database' : 'Industrial Database',
+          category: industry === 'banking' ? 'accounts' : 'production',
           accessLevel: 'Read-Write',
           status: 'Active',
           lastAccessed: '2 hours ago',
@@ -133,9 +142,9 @@ export const DataAccessContent: React.FC<{ industry?: string }> = ({ industry = 
         },
         {
           id: 3,
-          name: 'Transaction History Data Lake',
+          name: industry === 'banking' ? 'Transaction History Data Lake' : 'Process History Data Lake',
           type: 'Data Lake',
-          category: 'transactions',
+          category: industry === 'banking' ? 'transactions' : 'safety',
           accessLevel: 'Read-Only',
           status: 'Active',
           lastAccessed: '1 day ago',
@@ -143,9 +152,9 @@ export const DataAccessContent: React.FC<{ industry?: string }> = ({ industry = 
         },
         {
           id: 4,
-          name: 'Credit Risk Assessment DB',
+          name: industry === 'banking' ? 'Credit Risk Assessment DB' : 'Quality Assessment Database',
           type: 'Analytics Database',
-          category: 'loans',
+          category: industry === 'banking' ? 'loans' : 'quality',
           accessLevel: 'Read-Only',
           status: 'Restricted',
           lastAccessed: '5 days ago',
@@ -153,7 +162,7 @@ export const DataAccessContent: React.FC<{ industry?: string }> = ({ industry = 
         },
         {
           id: 5,
-          name: 'Anti-Money Laundering System',
+          name: industry === 'banking' ? 'Anti-Money Laundering System' : 'Environmental Compliance System',
           type: 'Compliance Database',
           category: 'compliance',
           accessLevel: 'Read-Only',
@@ -163,7 +172,7 @@ export const DataAccessContent: React.FC<{ industry?: string }> = ({ industry = 
         },
         {
           id: 6,
-          name: 'Customer Analytics Warehouse',
+          name: industry === 'banking' ? 'Customer Analytics Warehouse' : 'Process Analytics Warehouse',
           type: 'Data Warehouse',
           category: 'analytics',
           accessLevel: 'Read-Only',
@@ -220,10 +229,10 @@ export const DataAccessContent: React.FC<{ industry?: string }> = ({ industry = 
               </div>
               <div>
                 <CardTitle className="text-xl font-medium text-white">
-                  {industry === 'telco' ? 'Telecom Data Access Management' : 'Banking Data Access Management'}
+                  {industry === 'telco' ? 'Telecom Data Access Management' : industry === 'banking' ? 'Banking Data Access Management' : 'Industrial Data Access Management'}
                 </CardTitle>
                 <CardDescription className="text-gray-300">
-                  Connect to {industry === 'telco' ? 'telecom-specific' : 'banking-specific'} data sources and systems
+                  Connect to {industry === 'telco' ? 'telecom-specific' : industry === 'banking' ? 'banking-specific' : 'industrial-specific'} data sources and systems
                 </CardDescription>
               </div>
             </div>
@@ -239,7 +248,7 @@ export const DataAccessContent: React.FC<{ industry?: string }> = ({ industry = 
                 <DialogHeader>
                   <DialogTitle>Add New Database Connector</DialogTitle>
                   <DialogDescription className="text-gray-400">
-                    Connect your agent to a {industry === 'telco' ? 'telecom' : 'banking'} database or data source.
+                    Connect your agent to a {industry === 'telco' ? 'telecom' : industry === 'banking' ? 'banking' : 'industrial'} database or data source.
                   </DialogDescription>
                 </DialogHeader>
                 
@@ -270,7 +279,7 @@ export const DataAccessContent: React.FC<{ industry?: string }> = ({ industry = 
                           <FormLabel>Database Type</FormLabel>
                           <FormControl>
                             <Input 
-                              placeholder="Core Banking System, Data Warehouse, etc." 
+                              placeholder={industry === 'banking' ? "Core Banking System, Data Warehouse, etc." : "Production Control System, Process Data Warehouse, etc."} 
                               className="bg-beam-dark border-gray-700" 
                               {...field} 
                             />
@@ -357,7 +366,7 @@ export const DataAccessContent: React.FC<{ industry?: string }> = ({ industry = 
                   </div>
                   <div className="text-3xl font-bold text-white">{dataSources.filter(src => src.status === 'Active').length}</div>
                   <CardDescription className="text-gray-400">
-                    Across {industry === 'telco' ? 'telecom' : 'banking'} systems
+                    Across {industry === 'telco' ? 'telecom' : industry === 'banking' ? 'banking' : 'industrial'} systems
                   </CardDescription>
                 </CardContent>
               </Card>
@@ -381,7 +390,7 @@ export const DataAccessContent: React.FC<{ industry?: string }> = ({ industry = 
                   </div>
                   <div className="text-3xl font-bold text-green-400">Secure</div>
                   <CardDescription className="text-gray-400">
-                    {industry === 'telco' ? 'Telecom regulations enforced' : 'Banking regulations enforced'}
+                    {industry === 'telco' ? 'Telecom regulations enforced' : industry === 'banking' ? 'Banking regulations enforced' : 'Industrial regulations enforced'}
                   </CardDescription>
                 </CardContent>
               </Card>
@@ -391,10 +400,10 @@ export const DataAccessContent: React.FC<{ industry?: string }> = ({ industry = 
             <Card className="bg-beam-dark/70 border border-gray-700/30">
               <CardHeader className="pb-2">
                 <CardTitle className="text-xl text-white">
-                  {industry === 'telco' ? 'Telecom Data Sources' : 'Banking Data Sources'}
+                  {industry === 'telco' ? 'Telecom Data Sources' : industry === 'banking' ? 'Banking Data Sources' : 'Industrial Data Sources'}
                 </CardTitle>
                 <CardDescription className="text-gray-400">
-                  {industry === 'telco' ? 'Telecom-specific' : 'Banking-specific'} data sources available to this agent
+                  {industry === 'telco' ? 'Telecom-specific' : industry === 'banking' ? 'Banking-specific' : 'Industrial-specific'} data sources available to this agent
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -465,9 +474,9 @@ export const DataAccessContent: React.FC<{ industry?: string }> = ({ industry = 
             {/* Data Access Policies */}
             <Card className="bg-beam-dark/70 border border-gray-700/30">
               <CardHeader className="pb-2">
-                <CardTitle className="text-xl text-white">Banking Data Access Policies</CardTitle>
+                <CardTitle className="text-xl text-white">Industrial Data Access Policies</CardTitle>
                 <CardDescription className="text-gray-400">
-                  Banking-specific enforced policies for data access and compliance
+                  Industrial-specific enforced policies for data access and compliance
                 </CardDescription>
               </CardHeader>
               <CardContent>

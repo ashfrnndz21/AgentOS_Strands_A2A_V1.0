@@ -1,18 +1,17 @@
 import React from 'react';
 import { Workflow, Bot, Share2, Save, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { AirLiquideLogo } from '@/components/ui/AirLiquideLogo';
 
 export const ModernWorkspaceHeader = () => {
   return (
     <div className="h-10 bg-slate-800/40 backdrop-blur-sm border-b border-slate-600/30 flex items-center justify-between px-3 shadow-sm">
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-2">
-          <div className="p-1.5 bg-gradient-to-br from-cyan-400 to-purple-500 rounded-lg">
-            <Workflow className="h-3 w-3 text-white" />
-          </div>
+          <AirLiquideLogo size="sm" />
           <div>
-            <h1 className="text-sm font-bold text-slate-100">Multi Agent Workspace</h1>
-            <p className="text-[10px] text-slate-400">Banking workflows</p>
+            <h1 className="text-sm font-bold text-slate-100">Air Liquide Agent OS</h1>
+            <p className="text-[10px] text-slate-400">Industrial Gas & Technology Solutions</p>
           </div>
         </div>
       </div>

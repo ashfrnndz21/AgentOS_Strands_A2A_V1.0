@@ -1,194 +1,93 @@
-/**
- * Ollama Service for local AI model integration
- * Provides communication with Ollama API
- */
+import { apiClient } from '../apiClient';
 
-export interface OllamaModel {
-  name: string;
-  size: number;
-  digest: string;
-  modified_at: string;
-}
-
-export interface OllamaResponse {
-  status: 'success' | 'error';
-  response?: string;
-  message?: string;
-  eval_count?: number;
-  eval_duration?: number;
-  total_duration?: number;
-}
-
-export interface OllamaGenerateOptions {
-  temperature?: number;
-  max_tokens?: number;
-  top_p?: number;
-  top_k?: number;
-  system?: string;
-}
-
-export class OllamaService {
-  private baseUrl: string;
-
-  constructor(baseUrl: string = 'http://localhost:11434') {
-    this.baseUrl = baseUrl;
-  }
-
-  async getStatus(): Promise<{ status: string; models?: OllamaModel[] }> {
+class OllamaService {
+  async getModels() {
     try {
-      const response = await fetch(`${this.baseUrl}/api/tags`);
-      if (response.ok) {
-        const data = await response.json();
-        return {
-          status: 'running',
-          models: data.models || []
-        };
-      }
-      return { status: 'error' };
+      const response = await apiClient.getOllamaModels();
+      return response.models || [];
     } catch (error) {
-      return { status: 'not_running' };
+      console.error('Failed to get Ollama models:', error);
+      throw error;
     }
   }
 
-  async listModels(): Promise<OllamaModel[]> {
+  async listModels() {
     try {
-      const response = await fetch(`${this.baseUrl}/api/tags`);
-      if (response.ok) {
-        const data = await response.json();
-        return data.models || [];
+      // Use direct Ollama API to get models
+      const response = await fetch('http://localhost:11434/api/tags');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-      return [];
+      const data = await response.json();
+      return data.models || [];
     } catch (error) {
-      console.error('Failed to list models:', error);
-      return [];
+      console.error('Failed to list Ollama models:', error);
+      throw error;
     }
-  } 
- async generateResponse(
-    model: string,
-    prompt: string,
-    options?: OllamaGenerateOptions
-  ): Promise<OllamaResponse>;
-  async generateResponse(params: {
-    model: string;
-    prompt: string;
-    options?: OllamaGenerateOptions;
-  }): Promise<OllamaResponse>;
-  async generateResponse(
-    modelOrParams: string | { model: string; prompt: string; options?: OllamaGenerateOptions },
-    prompt?: string,
-    options?: OllamaGenerateOptions
-  ): Promise<OllamaResponse> {
+  }
+
+  async executeCommand(command: string) {
     try {
-      let model: string;
-      let actualPrompt: string;
-      let actualOptions: OllamaGenerateOptions;
+      const response = await apiClient.executeOllamaCommand(command);
+      return response;
+    } catch (error) {
+      console.error('Failed to execute Ollama command:', error);
+      throw error;
+    }
+  }
 
-      if (typeof modelOrParams === 'string') {
-        model = modelOrParams;
-        actualPrompt = prompt!;
-        actualOptions = options || {};
-      } else {
-        model = modelOrParams.model;
-        actualPrompt = modelOrParams.prompt;
-        actualOptions = modelOrParams.options || {};
-      }
+  async getStatus() {
+    try {
+      const response = await apiClient.getOllamaStatus();
+      return response;
+    } catch (error) {
+      console.error('Failed to get Ollama status:', error);
+      throw error;
+    }
+  }
 
-      const requestBody = {
-        model,
-        prompt: actualPrompt,
-        stream: false,
-        options: {
-          temperature: actualOptions.temperature || 0.7,
-          num_predict: actualOptions.max_tokens || 1000,
-          top_p: actualOptions.top_p || 0.9,
-          top_k: actualOptions.top_k || 40
-        }
-      };
-
-      if (actualOptions.system) {
-        (requestBody as any).system = actualOptions.system;
-      }
-
-      const response = await fetch(`${this.baseUrl}/api/generate`, {
+  async generateResponse(model: string, prompt: string, options: any = {}) {
+    try {
+      // Use the direct Ollama API for generation
+      const response = await fetch('http://localhost:11434/api/generate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(requestBody),
+        body: JSON.stringify({
+          model: model,
+          prompt: prompt,
+          stream: false,
+          options: {
+            temperature: options.temperature || 0.7,
+            num_predict: options.max_tokens || 1000,
+          }
+        })
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        return {
-          status: 'success',
-          response: data.response,
-          eval_count: data.eval_count,
-          eval_duration: data.eval_duration,
-          total_duration: data.total_duration
-        };
-      } else {
-        const errorData = await response.json();
-        return {
-          status: 'error',
-          message: errorData.error || 'Failed to generate response'
-        };
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+
+      const data = await response.json();
+      
+      return {
+        status: 'success',
+        response: data.response,
+        eval_count: data.eval_count || 0,
+        eval_duration: data.eval_duration || 0
+      };
     } catch (error) {
+      console.error('Failed to generate response:', error);
       return {
         status: 'error',
-        message: error instanceof Error ? error.message : 'Unknown error'
-      };
-    }
-  }
-
-  async pullModel(modelName: string): Promise<{ success: boolean; message: string }> {
-    try {
-      const response = await fetch(`${this.baseUrl}/api/pull`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name: modelName }),
-      });
-
-      if (response.ok) {
-        return { success: true, message: `Model ${modelName} pulled successfully` };
-      } else {
-        const errorData = await response.json();
-        return { success: false, message: errorData.error || 'Failed to pull model' };
-      }
-    } catch (error) {
-      return {
-        success: false,
-        message: error instanceof Error ? error.message : 'Unknown error'
-      };
-    }
-  }
-
-  async deleteModel(modelName: string): Promise<{ success: boolean; message: string }> {
-    try {
-      const response = await fetch(`${this.baseUrl}/api/delete`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name: modelName }),
-      });
-
-      if (response.ok) {
-        return { success: true, message: `Model ${modelName} deleted successfully` };
-      } else {
-        const errorData = await response.json();
-        return { success: false, message: errorData.error || 'Failed to delete model' };
-      }
-    } catch (error) {
-      return {
-        success: false,
-        message: error instanceof Error ? error.message : 'Unknown error'
+        message: error instanceof Error ? error.message : 'Unknown error',
+        response: '',
+        eval_count: 0
       };
     }
   }
 }
 
-// Global instance
 export const ollamaService = new OllamaService();
+export default ollamaService;

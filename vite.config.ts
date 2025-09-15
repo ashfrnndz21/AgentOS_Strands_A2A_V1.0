@@ -14,6 +14,21 @@ export default defineConfig(({ mode }) => ({
         changeOrigin: true,
         secure: false,
       },
+      '/api/agents': {
+        target: 'http://localhost:5002',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/api/strands': {
+        target: 'http://localhost:5004',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/api/chat': {
+        target: 'http://localhost:5005',
+        changeOrigin: true,
+        secure: false,
+      },
       '/api/rag': {
         target: 'http://localhost:5003',
         changeOrigin: true,

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   Bot, Command, Workflow, ShoppingBag, TrendingUp, Settings, Users, 
-  Globe, Heart, CreditCard, Smartphone, Building2, ChevronDown, ChevronRight, Activity, Network, Server, Terminal, FileText
+  Globe, Heart, CreditCard, Smartphone, Building2, ChevronDown, ChevronRight, Activity, Network, Server, Terminal, FileText, Shield, FlaskConical
 } from 'lucide-react';
 import { 
   Sidebar as SidebarComponent,
@@ -35,7 +35,9 @@ const iconMap = {
   Network,
   Server,
   Terminal,
-  FileText
+  FileText,
+  Shield,
+  FlaskConical
 };
 
 interface NavigationGroup {
@@ -76,7 +78,6 @@ export function IndustrySidebar() {
         { path: '/', label: 'Dashboard', icon: 'Command' },
         { path: '/system-flow', label: 'AgentOS Architecture Blueprint', icon: 'Network' },
         { path: '/agent-command', label: 'Agent Command Centre', icon: 'Command' },
-        { path: '/agents', label: 'AI Agents', icon: 'Bot' },
         { path: '/multi-agent-workspace', label: 'Multi Agent Workspace', icon: 'Bot' },
         { path: '/document-workspace', label: 'Document Chat', icon: 'FileText' },
         { path: '/ollama-agents', label: 'Ollama Agents', icon: 'Bot' },
@@ -96,9 +97,19 @@ export function IndustrySidebar() {
       ] : currentIndustry.id === 'telco' ? [
         { path: '/network-twin', label: 'Network Twin', icon: 'Globe' },
         { path: '/customer-analytics', label: 'Customer Analytics', icon: 'Users' }
-      ] : [
+      ] : currentIndustry.id === 'industrial' ? [
+        { path: '/procurement-analytics', label: 'Procurement Analytics', icon: 'TrendingUp' },
+        { path: '/safety-monitoring', label: 'Safety Monitoring', icon: 'Shield' },
+        { path: '/rd-discovery', label: 'R&D Discovery', icon: 'FlaskConical' },
+        { path: '/talent-management', label: 'Talent Management', icon: 'Users' }
+      ] : currentIndustry.id === 'healthcare' ? [
         { path: '/patient-analytics', label: 'Patient Analytics', icon: 'TrendingUp' },
         { path: '/care-management', label: 'Care Management', icon: 'Users' }
+      ] : [
+        { path: '/procurement-analytics', label: 'Procurement Analytics', icon: 'TrendingUp' },
+        { path: '/safety-monitoring', label: 'Safety Monitoring', icon: 'Shield' },
+        { path: '/rd-discovery', label: 'R&D Discovery', icon: 'FlaskConical' },
+        { path: '/talent-management', label: 'Talent Management', icon: 'Users' }
       ]
     },
     {

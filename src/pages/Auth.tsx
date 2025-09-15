@@ -59,9 +59,9 @@ const Auth = () => {
               <CreditCard className="h-7 w-7 text-white" />
             </div>
           </div>
-          <CardTitle className="text-2xl text-white text-center">Banking Agent OS</CardTitle>
+          <CardTitle className="text-2xl text-white text-center">Air Liquide Agent OS</CardTitle>
           <CardDescription className="text-center text-gray-400">
-            Secure access to your banking AI platform
+            Secure access to your industrial technology AI platform
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">

@@ -90,7 +90,6 @@ export function Sidebar() {
       items: [
         { path: '/', label: 'Dashboard', icon: 'Command' },
         { path: '/agent-command', label: 'Agent Command Centre', icon: 'Command' },
-        { path: '/agents', label: 'AI Agents', icon: 'Bot' },
         { path: '/ollama-agents', label: 'Ollama Agents', icon: 'Bot' },
         { path: '/multi-agent-workspace', label: 'Multi Agent Workspace', icon: 'Bot' },
         { path: '/mcp-dashboard', label: 'MCP Gateway', icon: 'Server' },

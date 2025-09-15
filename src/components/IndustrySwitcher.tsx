@@ -7,13 +7,14 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from './ui/dropdown-menu';
-import { ChevronDown, Building2, Smartphone, Heart } from 'lucide-react';
+import { ChevronDown, Building2, Smartphone, Heart, Factory } from 'lucide-react';
 import { useIndustry } from '@/contexts/IndustryContext';
 
 const industryIcons = {
   banking: Building2,
   telco: Smartphone,
   healthcare: Heart,
+  industrial: Factory,
 };
 
 export const IndustrySwitcher: React.FC = () => {

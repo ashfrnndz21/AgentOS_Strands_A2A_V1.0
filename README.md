@@ -72,6 +72,38 @@ The application runs multiple services:
 - **RAG API**: `http://localhost:5003` - Document chat with AI
 - **Ollama Core**: `http://localhost:11434` - AI model service
 
+## 🧠 Strands Intelligence Workspace
+
+The platform now includes an advanced **Strands-inspired multi-agent workflow system** with intelligent orchestration capabilities:
+
+### **Key Features**
+- **🔄 Strands Reasoning Patterns**: Sequential, parallel, and conditional task execution
+- **🤖 Local Ollama Integration**: Privacy-focused AI processing with dynamic model selection
+- **🛠️ Smart Tools**: Calculator, time, counter, Python REPL, and web search capabilities
+- **🎯 Auto-Orchestration**: Intelligent dependency resolution and workflow management
+- **📊 Real-time Monitoring**: Live execution status and performance metrics
+
+### **How to Use Strands Workspace**
+1. Navigate to **Multi-Agent Workspace** in the application
+2. Select **"Strands Intelligence Workspace"** from the project templates
+3. Use the **Agent Palette** to browse and select Ollama-powered agents
+4. **Drag & Drop** agents onto the workflow canvas
+5. **Connect nodes** to define task dependencies and data flow
+6. **Configure agents** with custom prompts, reasoning patterns, and tools
+7. **Execute workflows** and monitor real-time progress
+
+### **Strands Tools Available**
+- **Calculator**: Mathematical expressions and computations
+- **Current Time**: Date/time information with timezone support
+- **Letter Counter**: Text analysis and character counting
+- **Python REPL**: Code execution environment (development mode)
+- **Web Search**: Information retrieval capabilities (development mode)
+
+### **Supported Reasoning Patterns**
+- **Sequential**: Step-by-step task execution with dependency chains
+- **Parallel**: Multi-threaded agent coordination for concurrent processing
+- **Conditional**: Context-aware decision making with branching logic
+
 ### **Prerequisites**
 - **Node.js & npm** - [Install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 - **Python 3.8+** - For backend services

@@ -37,20 +37,22 @@ export const ModernDecisionNode = ({ data, selected }: any) => {
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="text-[10px] font-medium text-slate-100 truncate leading-tight">
-              {(data.label || 'Decision').substring(0, 8)}
+              {(data.label || data.name || 'Decision').substring(0, 12)}
             </h3>
             <p className="text-[8px] text-slate-400 truncate leading-tight">
               Logic Gate
             </p>
           </div>
-          <div className={`w-1.5 h-1.5 rounded-full ${getStatusColor(data.status)} shadow-sm`} />
+          <div className={`w-1.5 h-1.5 rounded-full ${data.isConfigured ? 'bg-green-500' : getStatusColor(data.status)} shadow-sm`} />
         </div>
         
         {/* Decision paths */}
         <div className="space-y-1">
           <div className="flex items-center justify-between text-[7px]">
-            <span className="text-slate-400">Condition</span>
-            <span className="text-slate-300 font-mono">{data.condition || 'If/Else'}</span>
+            <span className="text-slate-400">Conditions</span>
+            <span className="text-slate-300 font-mono">
+              {data.config?.conditions?.length || 0} rules
+            </span>
           </div>
           
           <div className="flex items-center gap-2">

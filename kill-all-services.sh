@@ -49,10 +49,13 @@ kill_by_pattern() {
 
 # Kill by port (most reliable method)
 kill_port 5173 "Frontend (Vite)"
-kill_port 5002 "Ollama API"
+kill_port 5004 "Strands API"
 kill_port 5003 "RAG API"
-kill_port 5004 "Additional Services"
+kill_port 5002 "Ollama API"
 kill_port 11434 "Ollama Core"
+
+# Clean up any Chat Orchestrator processes (in case they're running)
+kill_by_pattern "python.*chat_orchestrator_api" "Chat Orchestrator (cleanup)"
 
 echo ""
 echo "🔍 Killing processes by name pattern..."
@@ -60,6 +63,7 @@ echo "🔍 Killing processes by name pattern..."
 # Kill by process name patterns (backup method)
 kill_by_pattern "npm.*dev" "Frontend (npm)"
 kill_by_pattern "node.*vite" "Frontend (Vite)"
+kill_by_pattern "python.*strands_api" "Strands API"
 kill_by_pattern "python.*ollama_api" "Ollama API"
 kill_by_pattern "python.*rag_api" "RAG API"
 kill_by_pattern "python.*real_rag_api" "Real RAG API"
@@ -74,7 +78,7 @@ sleep 2
 
 # Verify ports are free
 echo "🔍 Verifying ports are free..."
-for port in 5173 5002 5003 5004; do
+for port in 5173 5004 5003 5002; do
     if lsof -ti:$port >/dev/null 2>&1; then
         echo "   ⚠️  Port $port still in use"
     else

@@ -24,6 +24,12 @@ import OllamaTerminal from "./pages/OllamaTerminal";
 import DocumentWorkspace from "./pages/DocumentWorkspace";
 import OllamaAgentDashboard from "./pages/OllamaAgentDashboard";
 
+import ProcurementAnalytics from "./pages/ProcurementAnalytics";
+import SafetyMonitoring from "./pages/SafetyMonitoring";
+import RDDiscovery from "./pages/RDDiscovery";
+import TalentManagement from "./pages/TalentManagement";
+import { ErrorBoundary } from "./components/ErrorBoundary";
+
 
 function App() {
   return (
@@ -48,7 +54,11 @@ function App() {
           <Route path="/system-flow" element={<Layout><SystemFlow /></Layout>} />
           <Route path="/ollama-terminal" element={<Layout><OllamaTerminal /></Layout>} />
           <Route path="/document-workspace" element={<Layout><DocumentWorkspace /></Layout>} />
-          <Route path="/ollama-agents" element={<Layout><OllamaAgentDashboard /></Layout>} />
+          <Route path="/ollama-agents" element={<Layout><ErrorBoundary><OllamaAgentDashboard /></ErrorBoundary></Layout>} />
+          <Route path="/procurement-analytics" element={<Layout><ProcurementAnalytics /></Layout>} />
+          <Route path="/safety-monitoring" element={<Layout><SafetyMonitoring /></Layout>} />
+          <Route path="/rd-discovery" element={<Layout><RDDiscovery /></Layout>} />
+          <Route path="/talent-management" element={<Layout><TalentManagement /></Layout>} />
 
         </Routes>
       </BrowserRouter>

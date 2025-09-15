@@ -15,7 +15,7 @@ export const IndustryBanner = () => {
       </div>
       <div className="flex flex-col">
         <h1 className="text-lg font-bold text-white leading-tight">
-          {currentIndustry.name.charAt(0).toUpperCase() + currentIndustry.name.slice(1)}
+          {currentIndustry.id === 'industrial' ? 'Air Liquide' : currentIndustry.name.charAt(0).toUpperCase() + currentIndustry.name.slice(1)}
         </h1>
         <span className="text-xs text-gray-400 leading-tight">Agent OS</span>
       </div>

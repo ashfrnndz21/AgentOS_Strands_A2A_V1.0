@@ -1,4 +1,4 @@
-import { ollamaService, OllamaService } from './ollamaService';
+import { ollamaService } from './OllamaService';
 
 export interface OllamaAgentConfig {
   id: string;
@@ -135,11 +135,11 @@ export class OllamaAgentService {
 
   constructor() {
     this.ollamaService = ollamaService;
-    // Load from localStorage first (immediate)
+    // Load from localStorage only (no Strands backend dependency)
     this.loadAgentsFromStorage();
     this.loadExecutionsFromStorage();
-    // Then try to sync with backend (async)
-    this.loadAgentsFromBackend();
+    
+    console.log('🔄 OllamaAgentService initialized (local storage only, no Strands dependency)');
     
     // Setup periodic cleanup (every hour)
     setInterval(() => {
@@ -195,74 +195,9 @@ export class OllamaAgentService {
   }
 
   async createAgent(config: Omit<OllamaAgentConfig, 'id'>): Promise<OllamaAgentConfig> {
-    // Try enhanced endpoint first (future-proof), then fallback to basic, then local
-    const endpoints = [
-      'http://localhost:5052/api/agents/ollama/enhanced',
-      'http://localhost:5052/api/agents/ollama'
-    ];
+    console.log('🔄 Creating agent locally (no Strands dependency)');
 
-    for (const endpoint of endpoints) {
-      try {
-        console.log(`🔄 Trying endpoint: ${endpoint}`);
-        const response = await fetch(endpoint, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(config)
-        });
-
-        if (response.ok) {
-          const result = await response.json();
-          console.log('✅ BACKEND SUCCESS:', endpoint);
-          console.log('🎯 BACKEND RESPONSE:', result);
-          console.log('🎯 MODEL FROM BACKEND:', result.agent.model);
-          
-          const agentConfig: OllamaAgentConfig = {
-            id: result.agent.id,
-            name: result.agent.name,
-            role: result.agent.role,
-            description: result.agent.description,
-            model: result.agent.model?.model_id || result.agent.model || config.model,
-            personality: config.personality,
-            expertise: config.expertise,
-            systemPrompt: result.agent.system_prompt,
-            temperature: result.agent.temperature,
-            maxTokens: result.agent.max_tokens,
-            tools: config.tools || [],
-            memory: config.memory || {
-              shortTerm: true,
-              longTerm: false,
-              contextual: true
-            },
-            ragEnabled: config.ragEnabled || false,
-            knowledgeBases: config.knowledgeBases || [],
-            guardrails: result.agent.guardrails || config.guardrails || { enabled: false, rules: [] },
-            capabilities: config.capabilities,
-            behavior: config.behavior,
-            // Preserve enhanced configurations
-            enhancedCapabilities: config.enhancedCapabilities,
-            enhancedGuardrails: config.enhancedGuardrails,
-            // Add metadata
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-            status: 'active'
-          };
-
-          this.agents.set(agentConfig.id, agentConfig);
-          this.saveAgentsToStorage();
-          return agentConfig;
-        } else {
-          console.warn(`❌ Endpoint failed: ${endpoint} (${response.status})`);
-        }
-      } catch (error) {
-        console.warn(`❌ Endpoint error: ${endpoint}`, error);
-      }
-    }
-
-    console.log('🔄 All backend endpoints failed, using local storage fallback');
-
-    // Fallback to local creation
+    // Create agent locally only
     const agentConfig: OllamaAgentConfig = {
       id: `agent-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`,
       ...config,
@@ -661,59 +596,8 @@ export class OllamaAgentService {
       .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
   }
 
-  // Backend Integration
-  async loadAgentsFromBackend(): Promise<void> {
-    try {
-      const response = await fetch('http://localhost:5052/api/agents/ollama');
-      
-      if (response.ok) {
-        const result = await response.json();
-        const agents = result.agents || [];
-        
-        // Convert backend format to frontend format
-        agents.forEach((backendAgent: any) => {
-          const agentConfig: OllamaAgentConfig = {
-            id: backendAgent.id,
-            name: backendAgent.name,
-            role: backendAgent.role,
-            description: backendAgent.description,
-            model: backendAgent.model.model_id,
-            personality: backendAgent.personality,
-            expertise: backendAgent.expertise,
-            systemPrompt: backendAgent.system_prompt,
-            temperature: backendAgent.temperature,
-            maxTokens: backendAgent.max_tokens,
-            tools: [],
-            memory: {
-              shortTerm: true,
-              longTerm: false,
-              contextual: true
-            },
-            ragEnabled: false,
-            knowledgeBases: [],
-            guardrails: backendAgent.guardrails || { enabled: false, rules: [] },
-            capabilities: {
-              conversation: true,
-              analysis: true,
-              creativity: true,
-              reasoning: true
-            },
-            behavior: {
-              response_style: 'helpful',
-              communication_tone: 'professional'
-            }
-          };
-          
-          this.agents.set(agentConfig.id, agentConfig);
-        });
-        
-        this.saveAgentsToStorage();
-      }
-    } catch (error) {
-      console.warn('Failed to load agents from backend, using local storage:', error);
-      // Don't reload from storage here since we already loaded in constructor
-    }
-  }
+  // Removed backend integration to eliminate Strands dependency
+  // All agents are now stored locally only
 
   // Persistence
   private saveAgentsToStorage(): void {
@@ -736,8 +620,44 @@ export class OllamaAgentService {
       const stored = localStorage.getItem('ollama-agents');
       if (stored) {
         const agentsData = JSON.parse(stored);
-        this.agents = new Map(agentsData);
-        console.log('Loaded', agentsData.length, 'agents from storage');
+        
+        // Migrate and validate agents to ensure all required properties exist
+        const migratedAgents = agentsData.map(([id, agent]: [string, any]) => {
+          const migratedAgent = {
+            ...agent,
+            // Ensure guardrails property exists
+            guardrails: agent.guardrails || {
+              enabled: false,
+              rules: [],
+              safetyLevel: 'medium',
+              contentFilters: []
+            },
+            // Ensure memory property exists
+            memory: agent.memory || {
+              shortTerm: true,
+              longTerm: false,
+              contextual: true
+            },
+            // Ensure other properties exist
+            capabilities: agent.capabilities || {
+              conversation: true,
+              analysis: true,
+              creativity: true,
+              reasoning: true
+            },
+            behavior: agent.behavior || {
+              response_style: 'helpful',
+              communication_tone: 'professional'
+            }
+          };
+          return [id, migratedAgent];
+        });
+        
+        this.agents = new Map(migratedAgents);
+        console.log('Loaded and migrated', agentsData.length, 'agents from storage');
+        
+        // Save the migrated agents back to storage
+        this.saveAgentsToStorage();
       }
       
       // Also load conversations

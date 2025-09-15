@@ -29,7 +29,11 @@ import {
   FileText,
   Wrench,
   MessageSquare,
-  Lock
+  Lock,
+  UserCheck,
+  GraduationCap,
+  Award,
+  Users
 } from 'lucide-react';
 
 interface TelcoCvmPropertiesPanelProps {
@@ -88,6 +92,47 @@ const agentIcons: Record<string, any> = {
   'cvm-memory': Brain,
   'compliance-guardrail': Shield,
   'insight-engine': Search,
+  // Procurement agent types
+  'supplier-research-specialist': Search,
+  'rfp-generation-specialist': FileText,
+  'contract-negotiation-specialist': MessageSquare,
+  'audit-monitoring-specialist': BarChart3,
+  'Risk Management Sub-Agent': AlertTriangle,
+  'Operations Sub-Agent': Zap,
+  'Central Orchestration Agent': Bot,
+  // Forecasting agent types
+  'demand-forecasting-specialist': TrendingUp,
+  'market-analysis-specialist': BarChart3,
+  'scenario-modeling-specialist': Target,
+  'risk-assessment-specialist': AlertTriangle,
+  'optimization-specialist': Zap,
+  'sensitivity-analysis-specialist': Activity,
+  'forecasting-orchestrator': Bot,
+  'data-processor': Code,
+  'visualization-engine': BarChart3,
+  'external-data-connector': Search,
+  // Recruitment agent types
+  'talent-sourcing-specialist': Search,
+  'ai-screening-specialist': UserCheck,
+  'interview-coordination-specialist': MessageSquare,
+  'onboarding-specialist': GraduationCap,
+  'career-development-specialist': TrendingUp,
+  'performance-tracking-specialist': Award,
+  'talent-orchestrator': Bot,
+  'candidate-database': Users,
+  'skills-matcher': Target,
+  'document-processor': FileText,
+  // Recruitment agent types
+  'talent-sourcing-specialist': Search,
+  'ai-screening-specialist': UserCheck,
+  'interview-coordination-specialist': MessageSquare,
+  'onboarding-specialist': UserCheck,
+  'career-development-specialist': TrendingUp,
+  'performance-analytics-specialist': BarChart3,
+  'talent-orchestrator': Bot,
+  'skills-matcher': Target,
+  'culture-fit-analyzer': Shield,
+  'compensation-advisor': DollarSign,
   'default': Bot
 };
 
@@ -122,9 +167,50 @@ export const TelcoCvmPropertiesPanel: React.FC<TelcoCvmPropertiesPanelProps> = (
       'revenue-optimization': 'You are a Revenue Optimization agent. Analyze pricing strategies, upselling opportunities, and revenue streams to maximize customer value.',
       'campaign-performance': 'You are a Campaign Performance analysis agent. Track campaign metrics, analyze effectiveness, and optimize marketing strategies.',
       'customer-sentiment': 'You are a Customer Sentiment analysis agent. Process customer feedback, social media, and interactions to gauge sentiment and satisfaction.',
-      'data-enrichment': 'You are a Data Enrichment agent. Collect, validate, and enhance customer data from multiple sources to create comprehensive profiles.'
+      'data-enrichment': 'You are a Data Enrichment agent. Collect, validate, and enhance customer data from multiple sources to create comprehensive profiles.',
+      // Procurement agent prompts
+      'supplier-research-specialist': 'You are a Supplier Research Specialist for hydrogen supply chain optimization. Research and vet suppliers from Air Liquide\'s network, assess capabilities, and ensure quality standards.',
+      'rfp-generation-specialist': 'You are an RFP Generation Specialist for hydrogen procurement. Create detailed RFPs with technical specifications, ensure regulatory compliance, and maintain documentation standards.',
+      'contract-negotiation-specialist': 'You are a Contract Negotiation Specialist for hydrogen supply contracts. Negotiate optimal terms, ensure legal compliance, and maximize cost savings while maintaining supply quality.',
+      'audit-monitoring-specialist': 'You are an Audit & Monitoring Specialist for hydrogen supply chain. Audit invoices, track deliveries, monitor quality metrics, and ensure compliance with delivery standards.',
+      'Risk Management Sub-Agent': 'You are a Risk & Contingency Specialist monitoring external data for supplier issues and managing backup sourcing for hydrogen supply.',
+      'Operations Sub-Agent': 'You are a Logistics & Transition Specialist managing delivery rerouting and supplier transitions without human intervention.',
+      'Central Orchestration Agent': 'You are a Central Orchestration Agent that breaks down "optimize hydrogen supply" into manageable tasks and delegates to specialized sub-agents.',
+      // Forecasting agent prompts
+      'demand-forecasting-specialist': 'You are a Demand Forecasting Specialist using advanced ML models and market data to predict future demand patterns. Analyze historical trends, seasonal variations, and market indicators to generate accurate forecasts.',
+      'market-analysis-specialist': 'You are a Market Analysis Specialist focused on analyzing market trends, competitive landscape, and economic indicators. Provide insights on market dynamics, competitor strategies, and growth opportunities.',
+      'scenario-modeling-specialist': 'You are a Scenario Modeling Specialist creating and evaluating multiple business scenarios. Build comprehensive models to assess different strategic options and their potential outcomes.',
+      'risk-assessment-specialist': 'You are a Risk Assessment Specialist identifying and quantifying business risks across different scenarios. Analyze probability distributions, impact assessments, and risk mitigation strategies.',
+      'optimization-specialist': 'You are an Optimization Specialist focused on resource allocation and strategic optimization. Use mathematical models and algorithms to find optimal solutions for complex business problems.',
+      'sensitivity-analysis-specialist': 'You are a Sensitivity Analysis Specialist analyzing parameter sensitivity and impact on forecasting models. Identify key variables and their influence on outcomes.',
+      'forecasting-orchestrator': 'You are a Forecasting Orchestrator coordinating all forecasting and scenario analysis tasks. Manage workflow between specialists and ensure comprehensive analysis coverage.',
+      'data-processor': 'You are a Data Processor specialized in cleaning, transforming, and preparing data for forecasting models. Ensure data quality and consistency across all analysis workflows.',
+      'visualization-engine': 'You are a Visualization Engine creating compelling charts, dashboards, and visual reports for forecasting results. Transform complex data into clear, actionable insights.',
+      'external-data-connector': 'You are an External Data Connector integrating market data, economic indicators, and external sources into forecasting workflows. Ensure real-time data availability and accuracy.',
+      // Recruitment agent prompts
+      'talent-sourcing-specialist': 'You are a Talent Sourcing Specialist identifying and sourcing top talent from multiple channels. Use advanced search techniques, social media, and professional networks to find qualified candidates.',
+      'ai-screening-specialist': 'You are an AI Screening Specialist performing automated resume screening and candidate evaluation. Analyze resumes, assess qualifications, and rank candidates based on job requirements.',
+      'interview-coordination-specialist': 'You are an Interview Coordination Specialist managing interview scheduling and coordination. Optimize interview processes, coordinate with stakeholders, and ensure smooth candidate experience.',
+      'onboarding-specialist': 'You are an Onboarding Specialist streamlining new employee onboarding processes. Create personalized onboarding plans, track progress, and ensure successful integration.',
+      'career-development-specialist': 'You are a Career Development Specialist managing career paths and employee development. Design development programs, track career progression, and identify growth opportunities.',
+      'performance-tracking-specialist': 'You are a Performance Tracking Specialist monitoring and analyzing employee performance metrics. Track KPIs, identify trends, and provide performance insights.',
+      'talent-orchestrator': 'You are a Talent Management Orchestrator coordinating all talent management processes. Manage end-to-end recruitment workflows and ensure optimal talent acquisition and retention.',
+      'candidate-database': 'You are a Candidate Database managing candidate profiles and application data. Maintain comprehensive candidate records and enable efficient talent pool management.',
+      'skills-matcher': 'You are a Skills Matching Engine matching candidate skills with job requirements. Use advanced algorithms to identify best-fit candidates for specific roles.',
+      'document-processor': 'You are a Document Processor handling resumes, applications, and HR documents. Extract key information, standardize formats, and enable efficient document management.',
+      // Recruitment agent prompts
+      'talent-sourcing-specialist': 'You are a Talent Sourcing Specialist identifying and sourcing top talent from multiple channels. Use advanced search techniques, social media, and professional networks to find qualified candidates.',
+      'ai-screening-specialist': 'You are an AI Screening Specialist performing automated resume screening and candidate evaluation. Analyze qualifications, experience, and skills to identify the best matches for positions.',
+      'interview-coordination-specialist': 'You are an Interview Coordination Specialist managing interview scheduling and coordination. Optimize schedules, coordinate with multiple stakeholders, and ensure smooth interview processes.',
+      'onboarding-specialist': 'You are an Onboarding Specialist streamlining new employee onboarding processes. Create personalized onboarding experiences and ensure successful integration into the organization.',
+      'career-development-specialist': 'You are a Career Development Specialist managing career paths and skill development. Design personalized development plans and track employee growth and progression.',
+      'performance-analytics-specialist': 'You are a Performance Analytics Specialist analyzing employee performance and engagement. Track metrics, identify trends, and provide insights for talent management decisions.',
+      'talent-orchestrator': 'You are a Talent Management Orchestrator coordinating all talent management and recruitment tasks. Manage workflow between specialists and ensure comprehensive talent lifecycle management.',
+      'skills-matcher': 'You are a Skills Matching Engine that matches candidate skills with job requirements. Analyze skill gaps, competency levels, and role requirements for optimal candidate-job fit.',
+      'culture-fit-analyzer': 'You are a Culture Fit Analyzer evaluating cultural alignment and team fit. Assess personality traits, values, and work styles to ensure cultural compatibility.',
+      'compensation-advisor': 'You are a Compensation Advisor providing market-based compensation recommendations. Analyze market data, internal equity, and performance metrics to suggest competitive compensation packages.'
     };
-    return prompts[agentType] || 'You are an AI agent designed to assist with customer value management tasks.';
+    return prompts[agentType] || 'You are an AI agent designed to assist with multi-agent workflow tasks.';
   };
 
   const getAvailableTools = (agentType: string) => {
@@ -136,9 +222,50 @@ export const TelcoCvmPropertiesPanel: React.FC<TelcoCvmPropertiesPanelProps> = (
       'revenue-optimization': ['Pricing Optimizer', 'Upsell Detector', 'Revenue Tracker', 'Opportunity Finder'],
       'campaign-performance': ['Metrics Tracker', 'A/B Tester', 'ROI Calculator', 'Performance Analyzer'],
       'customer-sentiment': ['Sentiment Analyzer', 'Text Processor', 'Social Monitor', 'Feedback Aggregator'],
-      'data-enrichment': ['Data Validator', 'Source Integrator', 'Profile Builder', 'Quality Checker']
+      'data-enrichment': ['Data Validator', 'Source Integrator', 'Profile Builder', 'Quality Checker'],
+      // Procurement agent tools
+      'supplier-research-specialist': ['Supplier Network Analysis', 'Capability Assessment', 'Financial Vetting', 'Geographic Coverage'],
+      'rfp-generation-specialist': ['Technical Specification Generation', 'RFP Templates', 'Compliance Documentation', 'Requirement Analysis'],
+      'contract-negotiation-specialist': ['Contract Analysis', 'Price Negotiation', 'Terms Optimization', 'Legal Review'],
+      'audit-monitoring-specialist': ['Invoice Auditing', 'Delivery Tracking', 'Quality Monitoring', 'Performance Analytics'],
+      'Risk Management Sub-Agent': ['External Data Monitoring', 'Risk Detection', 'Backup Sourcing', 'Contingency Planning'],
+      'Operations Sub-Agent': ['Route Optimization', 'Delivery Rerouting', 'Transition Management', 'Logistics Coordination'],
+      'Central Orchestration Agent': ['Task Delegation', 'Goal Decomposition', 'Sub-Agent Coordination', 'Strategic Planning'],
+      // Forecasting agent tools
+      'demand-forecasting-specialist': ['ML Forecasting Models', 'Time Series Analysis', 'Seasonal Decomposition', 'Trend Analysis'],
+      'market-analysis-specialist': ['Market Research Tools', 'Competitive Intelligence', 'Economic Indicators', 'Industry Analysis'],
+      'scenario-modeling-specialist': ['Monte Carlo Simulation', 'Decision Trees', 'Scenario Builder', 'What-If Analysis'],
+      'risk-assessment-specialist': ['Risk Modeling', 'Probability Analysis', 'Impact Assessment', 'Risk Quantification'],
+      'optimization-specialist': ['Linear Programming', 'Genetic Algorithms', 'Resource Optimizer', 'Constraint Solver'],
+      'sensitivity-analysis-specialist': ['Parameter Analysis', 'Sensitivity Testing', 'Tornado Charts', 'Impact Modeling'],
+      'forecasting-orchestrator': ['Workflow Coordination', 'Task Scheduling', 'Result Aggregation', 'Quality Control'],
+      'data-processor': ['Data Cleaning', 'ETL Pipeline', 'Data Validation', 'Format Conversion'],
+      'visualization-engine': ['Chart Generator', 'Dashboard Builder', 'Report Creator', 'Interactive Plots'],
+      'external-data-connector': ['API Integration', 'Data Feeds', 'Market Data', 'Real-time Sync'],
+      // Recruitment agent tools
+      'talent-sourcing-specialist': ['LinkedIn Sourcing', 'Boolean Search', 'Social Media Mining', 'Talent Pool Analysis'],
+      'ai-screening-specialist': ['Resume Parser', 'Skills Assessment', 'Candidate Ranking', 'Qualification Matcher'],
+      'interview-coordination-specialist': ['Calendar Integration', 'Interview Scheduler', 'Stakeholder Coordination', 'Candidate Communication'],
+      'onboarding-specialist': ['Onboarding Workflows', 'Document Management', 'Progress Tracking', 'Integration Planning'],
+      'career-development-specialist': ['Career Path Planner', 'Skills Gap Analysis', 'Development Programs', 'Growth Tracking'],
+      'performance-tracking-specialist': ['Performance Analytics', 'KPI Tracking', 'Trend Analysis', 'Report Generation'],
+      'talent-orchestrator': ['Workflow Orchestration', 'Process Automation', 'Stakeholder Management', 'Quality Control'],
+      'candidate-database': ['Profile Management', 'Data Storage', 'Search & Filter', 'Record Maintenance'],
+      'skills-matcher': ['Skills Analysis', 'Job Matching', 'Compatibility Scoring', 'Recommendation Engine'],
+      'document-processor': ['Document Parser', 'Data Extraction', 'Format Standardization', 'Content Analysis'],
+      // Recruitment agent tools
+      'talent-sourcing-specialist': ['LinkedIn Sourcing', 'Boolean Search', 'Social Media Mining', 'Talent Database'],
+      'ai-screening-specialist': ['Resume Parser', 'Skills Analyzer', 'Qualification Matcher', 'Bias Detection'],
+      'interview-coordination-specialist': ['Calendar Integration', 'Scheduling Optimizer', 'Interview Tracker', 'Feedback Collector'],
+      'onboarding-specialist': ['Onboarding Workflows', 'Document Manager', 'Training Scheduler', 'Progress Tracker'],
+      'career-development-specialist': ['Skills Assessment', 'Career Planner', 'Learning Paths', 'Goal Tracker'],
+      'performance-analytics-specialist': ['Performance Metrics', 'Engagement Surveys', 'Analytics Dashboard', 'Trend Analysis'],
+      'talent-orchestrator': ['Workflow Coordination', 'Task Management', 'Process Optimization', 'Quality Control'],
+      'skills-matcher': ['Skills Database', 'Competency Mapping', 'Gap Analysis', 'Match Scoring'],
+      'culture-fit-analyzer': ['Personality Assessment', 'Culture Mapping', 'Team Dynamics', 'Fit Scoring'],
+      'compensation-advisor': ['Market Data', 'Salary Benchmarking', 'Equity Analysis', 'Compensation Modeling']
     };
-    return tools[agentType] || ['Generic Tool', 'Data Processor', 'Analytics Engine', 'Report Generator'];
+    return tools[agentType] || localData.tools || ['Generic Tool', 'Data Processor', 'Analytics Engine', 'Report Generator'];
   };
 
   const getGuardrails = (agentType: string) => {
@@ -150,9 +277,50 @@ export const TelcoCvmPropertiesPanel: React.FC<TelcoCvmPropertiesPanelProps> = (
       'revenue-optimization': ['Fair Pricing', 'Customer Value', 'Transparent Offers', 'Revenue Ethics'],
       'campaign-performance': ['Audience Protection', 'Content Moderation', 'Targeting Ethics', 'Performance Bounds'],
       'customer-sentiment': ['Sentiment Privacy', 'Content Security', 'Bias Monitoring', 'Response Ethics'],
-      'data-enrichment': ['Source Validation', 'Data Accuracy', 'Privacy Shield', 'Quality Assurance']
+      'data-enrichment': ['Source Validation', 'Data Accuracy', 'Privacy Shield', 'Quality Assurance'],
+      // Procurement agent guardrails
+      'supplier-research-specialist': ['Supplier Quality Standards', 'Financial Stability Checks', 'Network Compliance', 'Data Privacy'],
+      'rfp-generation-specialist': ['Technical Accuracy', 'Regulatory Compliance', 'Specification Standards', 'Documentation Security'],
+      'contract-negotiation-specialist': ['Legal Compliance', 'Budget Constraints', 'Contract Standards', 'Negotiation Ethics'],
+      'audit-monitoring-specialist': ['Audit Standards', 'Quality Thresholds', 'Delivery Requirements', 'Data Accuracy'],
+      'Risk Management Sub-Agent': ['Risk Thresholds', 'Supply Continuity', 'Emergency Protocols', 'Data Security'],
+      'Operations Sub-Agent': ['Delivery Standards', 'Safety Protocols', 'Operational Efficiency', 'Logistics Compliance'],
+      'Central Orchestration Agent': ['Supply Continuity', 'Cost Optimization', 'Quality Assurance', 'Strategic Oversight'],
+      // Forecasting agent guardrails
+      'demand-forecasting-specialist': ['Model Accuracy', 'Data Quality', 'Forecast Bounds', 'Bias Detection'],
+      'market-analysis-specialist': ['Source Reliability', 'Analysis Objectivity', 'Data Privacy', 'Competitive Ethics'],
+      'scenario-modeling-specialist': ['Model Validation', 'Scenario Realism', 'Assumption Tracking', 'Outcome Bounds'],
+      'risk-assessment-specialist': ['Risk Calibration', 'Assessment Accuracy', 'Probability Bounds', 'Impact Validation'],
+      'optimization-specialist': ['Solution Feasibility', 'Constraint Validation', 'Optimization Bounds', 'Resource Limits'],
+      'sensitivity-analysis-specialist': ['Parameter Bounds', 'Analysis Scope', 'Result Validation', 'Impact Limits'],
+      'forecasting-orchestrator': ['Workflow Integrity', 'Quality Assurance', 'Result Consistency', 'Process Compliance'],
+      'data-processor': ['Data Quality', 'Processing Accuracy', 'Format Validation', 'Privacy Protection'],
+      'visualization-engine': ['Visual Accuracy', 'Chart Standards', 'Color Accessibility', 'Data Integrity'],
+      'external-data-connector': ['Data Validation', 'Source Verification', 'Update Frequency', 'Access Control'],
+      // Recruitment agent guardrails
+      'talent-sourcing-specialist': ['Privacy Compliance', 'Sourcing Ethics', 'Data Protection', 'Candidate Consent'],
+      'ai-screening-specialist': ['Bias Prevention', 'Fair Assessment', 'Privacy Protection', 'Screening Standards'],
+      'interview-coordination-specialist': ['Scheduling Ethics', 'Candidate Experience', 'Process Fairness', 'Communication Standards'],
+      'onboarding-specialist': ['Onboarding Standards', 'Privacy Protection', 'Process Compliance', 'Integration Ethics'],
+      'career-development-specialist': ['Development Fairness', 'Growth Equity', 'Performance Standards', 'Career Ethics'],
+      'performance-tracking-specialist': ['Performance Privacy', 'Tracking Ethics', 'Data Security', 'Assessment Fairness'],
+      'talent-orchestrator': ['Process Integrity', 'Workflow Compliance', 'Quality Assurance', 'Orchestration Ethics'],
+      'candidate-database': ['Data Privacy', 'Information Security', 'Access Control', 'Record Integrity'],
+      'skills-matcher': ['Matching Fairness', 'Algorithm Transparency', 'Bias Prevention', 'Scoring Ethics'],
+      'document-processor': ['Document Privacy', 'Processing Security', 'Data Accuracy', 'Content Protection'],
+      // Recruitment agent guardrails
+      'talent-sourcing-specialist': ['Privacy Compliance', 'GDPR Adherence', 'Sourcing Ethics', 'Data Protection'],
+      'ai-screening-specialist': ['Bias Prevention', 'Fair Assessment', 'Equal Opportunity', 'Discrimination Protection'],
+      'interview-coordination-specialist': ['Scheduling Fairness', 'Process Consistency', 'Candidate Experience', 'Time Management'],
+      'onboarding-specialist': ['Process Standardization', 'Compliance Tracking', 'Experience Quality', 'Documentation Standards'],
+      'career-development-specialist': ['Development Equity', 'Growth Opportunities', 'Skill Validation', 'Progress Fairness'],
+      'performance-analytics-specialist': ['Performance Fairness', 'Metric Accuracy', 'Privacy Protection', 'Bias Monitoring'],
+      'talent-orchestrator': ['Process Integrity', 'Quality Assurance', 'Workflow Consistency', 'Compliance Oversight'],
+      'skills-matcher': ['Matching Accuracy', 'Skill Validation', 'Bias Prevention', 'Fair Assessment'],
+      'culture-fit-analyzer': ['Cultural Sensitivity', 'Bias Prevention', 'Diversity Inclusion', 'Fair Evaluation'],
+      'compensation-advisor': ['Pay Equity', 'Market Fairness', 'Compensation Transparency', 'Legal Compliance']
     };
-    return guardrails[agentType] || ['Data Protection', 'Privacy Compliance', 'Security Control', 'Ethics Monitor'];
+    return guardrails[agentType] || localData.guardrails || ['Data Protection', 'Privacy Compliance', 'Security Control', 'Ethics Monitor'];
   };
 
   const getPerformanceMetrics = () => {
@@ -188,6 +356,191 @@ export const TelcoCvmPropertiesPanel: React.FC<TelcoCvmPropertiesPanelProps> = (
       );
     }
 
+    // Handle procurement-specific metrics
+    if (localData.agentType === 'supplier-research-specialist') {
+      return (
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-slate-700/30 p-3 rounded-lg">
+            <div className="text-sm text-slate-400">Suppliers Vetted</div>
+            <div className="text-lg font-semibold text-green-400">{localData.suppliersVetted?.toLocaleString() || 'N/A'}</div>
+          </div>
+          <div className="bg-slate-700/30 p-3 rounded-lg">
+            <div className="text-sm text-slate-400">Qualified</div>
+            <div className="text-lg font-semibold text-blue-400">{localData.qualifiedSuppliers || 'N/A'}</div>
+          </div>
+        </div>
+      );
+    }
+
+    if (localData.agentType === 'contract-negotiation-specialist') {
+      return (
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-slate-700/30 p-3 rounded-lg">
+            <div className="text-sm text-slate-400">Avg Savings</div>
+            <div className="text-lg font-semibold text-green-400">{localData.avgSavings || 'N/A'}</div>
+          </div>
+          <div className="bg-slate-700/30 p-3 rounded-lg">
+            <div className="text-sm text-slate-400">Success Rate</div>
+            <div className="text-lg font-semibold text-blue-400">{localData.successRate || 'N/A'}</div>
+          </div>
+        </div>
+      );
+    }
+
+    if (localData.agentType === 'audit-monitoring-specialist') {
+      return (
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-slate-700/30 p-3 rounded-lg">
+            <div className="text-sm text-slate-400">Invoices Audited</div>
+            <div className="text-lg font-semibold text-green-400">{localData.invoicesAudited?.toLocaleString() || 'N/A'}</div>
+          </div>
+          <div className="bg-slate-700/30 p-3 rounded-lg">
+            <div className="text-sm text-slate-400">Audit Accuracy</div>
+            <div className="text-lg font-semibold text-blue-400">{localData.auditAccuracy || 'N/A'}</div>
+          </div>
+        </div>
+      );
+    }
+
+    // Handle forecasting-specific metrics
+    if (localData.agentType === 'demand-forecasting-specialist') {
+      return (
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-slate-700/30 p-3 rounded-lg">
+            <div className="text-sm text-slate-400">Forecast Accuracy</div>
+            <div className="text-lg font-semibold text-green-400">{localData.forecastAccuracy || 'N/A'}</div>
+          </div>
+          <div className="bg-slate-700/30 p-3 rounded-lg">
+            <div className="text-sm text-slate-400">Models Trained</div>
+            <div className="text-lg font-semibold text-blue-400">{localData.modelsTrained || 'N/A'}</div>
+          </div>
+        </div>
+      );
+    }
+
+    if (localData.agentType === 'scenario-modeling-specialist') {
+      return (
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-slate-700/30 p-3 rounded-lg">
+            <div className="text-sm text-slate-400">Scenarios Created</div>
+            <div className="text-lg font-semibold text-green-400">{localData.scenariosCreated || 'N/A'}</div>
+          </div>
+          <div className="bg-slate-700/30 p-3 rounded-lg">
+            <div className="text-sm text-slate-400">Model Accuracy</div>
+            <div className="text-lg font-semibold text-blue-400">{localData.modelAccuracy || 'N/A'}</div>
+          </div>
+        </div>
+      );
+    }
+
+    if (localData.agentType === 'market-analysis-specialist') {
+      return (
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-slate-700/30 p-3 rounded-lg">
+            <div className="text-sm text-slate-400">Reports Generated</div>
+            <div className="text-lg font-semibold text-green-400">{localData.reportsGenerated || 'N/A'}</div>
+          </div>
+          <div className="bg-slate-700/30 p-3 rounded-lg">
+            <div className="text-sm text-slate-400">Data Sources</div>
+            <div className="text-lg font-semibold text-blue-400">{localData.dataSources || 'N/A'}</div>
+          </div>
+        </div>
+      );
+    }
+
+    // Handle recruitment-specific metrics
+    if (localData.agentType === 'talent-sourcing-specialist') {
+      return (
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-slate-700/30 p-3 rounded-lg">
+            <div className="text-sm text-slate-400">Candidates Sourced</div>
+            <div className="text-lg font-semibold text-green-400">{localData.candidatesSourced || 'N/A'}</div>
+          </div>
+          <div className="bg-slate-700/30 p-3 rounded-lg">
+            <div className="text-sm text-slate-400">Quality Score</div>
+            <div className="text-lg font-semibold text-blue-400">{localData.qualityScore || 'N/A'}</div>
+          </div>
+        </div>
+      );
+    }
+
+    if (localData.agentType === 'ai-screening-specialist') {
+      return (
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-slate-700/30 p-3 rounded-lg">
+            <div className="text-sm text-slate-400">Resumes Screened</div>
+            <div className="text-lg font-semibold text-green-400">{localData.resumesScreened || 'N/A'}</div>
+          </div>
+          <div className="bg-slate-700/30 p-3 rounded-lg">
+            <div className="text-sm text-slate-400">Screening Accuracy</div>
+            <div className="text-lg font-semibold text-blue-400">{localData.screeningAccuracy || 'N/A'}</div>
+          </div>
+        </div>
+      );
+    }
+
+    if (localData.agentType === 'performance-tracking-specialist') {
+      return (
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-slate-700/30 p-3 rounded-lg">
+            <div className="text-sm text-slate-400">Employees Tracked</div>
+            <div className="text-lg font-semibold text-green-400">{localData.employeesTracked || 'N/A'}</div>
+          </div>
+          <div className="bg-slate-700/30 p-3 rounded-lg">
+            <div className="text-sm text-slate-400">Performance Score</div>
+            <div className="text-lg font-semibold text-blue-400">{localData.performanceScore || 'N/A'}</div>
+          </div>
+        </div>
+      );
+    }
+
+    // Handle recruitment-specific metrics
+    if (localData.agentType === 'talent-sourcing-specialist') {
+      return (
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-slate-700/30 p-3 rounded-lg">
+            <div className="text-sm text-slate-400">Candidates Sourced</div>
+            <div className="text-lg font-semibold text-green-400">{localData.candidatesSourced || 'N/A'}</div>
+          </div>
+          <div className="bg-slate-700/30 p-3 rounded-lg">
+            <div className="text-sm text-slate-400">Quality Score</div>
+            <div className="text-lg font-semibold text-blue-400">{localData.qualityScore || 'N/A'}</div>
+          </div>
+        </div>
+      );
+    }
+
+    if (localData.agentType === 'ai-screening-specialist') {
+      return (
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-slate-700/30 p-3 rounded-lg">
+            <div className="text-sm text-slate-400">Resumes Screened</div>
+            <div className="text-lg font-semibold text-green-400">{localData.resumesScreened || 'N/A'}</div>
+          </div>
+          <div className="bg-slate-700/30 p-3 rounded-lg">
+            <div className="text-sm text-slate-400">Match Accuracy</div>
+            <div className="text-lg font-semibold text-blue-400">{localData.matchAccuracy || 'N/A'}</div>
+          </div>
+        </div>
+      );
+    }
+
+    if (localData.agentType === 'performance-analytics-specialist') {
+      return (
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-slate-700/30 p-3 rounded-lg">
+            <div className="text-sm text-slate-400">Employees Tracked</div>
+            <div className="text-lg font-semibold text-green-400">{localData.employeesTracked || 'N/A'}</div>
+          </div>
+          <div className="bg-slate-700/30 p-3 rounded-lg">
+            <div className="text-sm text-slate-400">Engagement Score</div>
+            <div className="text-lg font-semibold text-blue-400">{localData.engagementScore || 'N/A'}</div>
+          </div>
+        </div>
+      );
+    }
+
+    // Default metrics for other agents
     return (
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-slate-700/30 p-3 rounded-lg">

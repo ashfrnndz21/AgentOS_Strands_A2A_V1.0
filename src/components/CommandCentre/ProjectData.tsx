@@ -1,177 +1,211 @@
 
-// Define mock decision nodes and data lineage for banking projects
+// Define mock decision nodes and data lineage for different industries
 import { NodeType } from '@/components/DecisionPath/types';
 import { ModelInfo } from '@/components/AgentTraceability';
 
 export const getProjectData = () => {
   return {
-    'consumer-banking': {
-      department: 'Consumer Banking',
-      decisionNodes: generateConsumerBankingDecisionNodes(),
-      lineageNodes: generateConsumerBankingLineageNodes(),
-      lineageEdges: generateConsumerBankingLineageEdges(),
+    'hydrogen-production': {
+      department: 'Hydrogen Production',
+      decisionNodes: generateHydrogenProductionDecisionNodes(),
+      lineageNodes: generateHydrogenProductionLineageNodes(),
+      lineageEdges: generateHydrogenProductionLineageEdges(),
       agents: [
         {
-          name: "Customer Onboarding Agent",
-          description: "Streamlines new customer account opening and KYC processes",
+          name: "Electrolysis Process Agent",
+          description: "Monitors and optimizes hydrogen electrolysis production processes",
           model: {
             name: "GPT-4o",
             provider: "OpenAI",
             paramSize: "1.76 trillion",
             contextLength: "128,000 tokens", 
             latency: "250ms",
-            role: "Automates identity verification and account setup workflows"
+            role: "Automates electrolysis parameter optimization and process control"
           },
-          tools: ["KYC API connectors", "Document verification", "Credit scoring APIs"],
-          dataAccess: ["Customer databases", "Credit bureau data", "Regulatory compliance systems"]
+          tools: ["Process control systems", "Energy optimization algorithms", "Quality monitoring"],
+          dataAccess: ["Production databases", "Energy consumption data", "Quality control systems"]
         },
         {
-          name: "Personal Finance Advisor",
-          description: "Provides personalized financial advice and product recommendations",
+          name: "Production Planning Agent",
+          description: "Optimizes hydrogen production schedules based on demand and energy costs",
           model: {
             name: "Claude 3 Opus",
             provider: "Anthropic",
             paramSize: "1.5 trillion",
             contextLength: "200,000 tokens", 
             latency: "320ms",
-            role: "Analyzes spending patterns and recommends financial products"
+            role: "Analyzes demand patterns and optimizes production scheduling"
           },
-          tools: ["Financial planning algorithms", "Risk assessment tools", "Product recommendation engine"],
-          dataAccess: ["Transaction history", "Account balances", "Product catalogs"]
+          tools: ["Demand forecasting", "Energy cost optimization", "Production scheduling algorithms"],
+          dataAccess: ["Demand forecasts", "Energy pricing data", "Production capacity data"]
         },
         {
-          name: "Loan Underwriting Agent",
-          description: "Automates loan application processing and risk assessment",
+          name: "Quality Control Agent",
+          description: "Monitors hydrogen purity and ensures product quality standards",
           model: {
             name: "Llama 3 70B",
             provider: "Meta",
             paramSize: "70 billion",
             contextLength: "8,000 tokens", 
             latency: "180ms",
-            role: "Evaluates creditworthiness and determines loan eligibility"
+            role: "Evaluates product quality and ensures compliance with specifications"
           },
-          tools: ["Credit scoring models", "Income verification", "Collateral assessment"],
-          dataAccess: ["Credit reports", "Employment records", "Asset valuations"]
+          tools: ["Spectroscopy analysis", "Purity testing", "Quality assurance protocols"],
+          dataAccess: ["Quality test results", "Specification databases", "Compliance records"]
         },
         {
-          name: "Fraud Detection Agent",
-          description: "Monitors transactions for suspicious activity and fraud prevention",
+          name: "Safety Monitoring Agent",
+          description: "Monitors production safety parameters and prevents hazardous conditions",
           model: {
             name: "GPT-4o",
             provider: "OpenAI",
             paramSize: "1.76 trillion",
             contextLength: "128,000 tokens", 
             latency: "230ms",
-            role: "Real-time transaction monitoring and fraud pattern recognition"
+            role: "Real-time safety monitoring and hazard prevention"
           },
-          tools: ["Anomaly detection algorithms", "Behavioral analytics", "Risk scoring"],
-          dataAccess: ["Transaction logs", "Customer behavior patterns", "Fraud databases"]
+          tools: ["Safety sensor networks", "Risk assessment algorithms", "Emergency response protocols"],
+          dataAccess: ["Safety sensor data", "Historical incident data", "Safety compliance databases"]
         },
         {
-          name: "Customer Service Agent",
-          description: "Handles customer inquiries and provides 24/7 support",
+          name: "Maintenance Scheduling Agent",
+          description: "Predicts equipment maintenance needs and schedules preventive maintenance",
           model: {
             name: "Claude 3 Sonnet",
             provider: "Anthropic",
             paramSize: "540 billion",
             contextLength: "180,000 tokens", 
             latency: "200ms",
-            role: "Resolves customer issues and provides banking assistance"
+            role: "Optimizes maintenance schedules and prevents equipment failures"
           },
-          tools: ["Natural language processing", "Sentiment analysis", "Issue resolution workflows"],
-          dataAccess: ["Customer profiles", "Account information", "Service history"]
+          tools: ["Predictive analytics", "Equipment monitoring", "Maintenance optimization"],
+          dataAccess: ["Equipment sensor data", "Maintenance history", "Performance metrics"]
         }
       ],
       workflow: [
         {
-          phase: "Customer Acquisition",
-          description: "Onboard new customers with automated KYC and account setup",
-          agents: ["Customer Onboarding Agent", "Fraud Detection Agent"],
-          outputs: ["Verified customer profiles", "Opened accounts", "Compliance documentation"]
+          phase: "Production Planning",
+          description: "Optimize hydrogen production based on demand and energy availability",
+          agents: ["Production Planning Agent", "Electrolysis Process Agent"],
+          outputs: ["Production schedules", "Energy optimization plans", "Capacity allocations"]
         },
         {
-          phase: "Product Recommendation",
-          description: "Analyze customer needs and recommend suitable products",
-          agents: ["Personal Finance Advisor", "Customer Service Agent"],
-          outputs: ["Personalized product recommendations", "Financial planning advice"]
+          phase: "Process Control",
+          description: "Monitor and control electrolysis processes for optimal efficiency",
+          agents: ["Electrolysis Process Agent", "Safety Monitoring Agent"],
+          outputs: ["Process parameters", "Safety compliance reports", "Efficiency metrics"]
         },
         {
-          phase: "Loan Processing",
-          description: "Process loan applications with automated underwriting",
-          agents: ["Loan Underwriting Agent", "Fraud Detection Agent"],
-          outputs: ["Credit decisions", "Risk assessments", "Loan approvals"]
+          phase: "Quality Assurance",
+          description: "Ensure hydrogen purity and quality standards are met",
+          agents: ["Quality Control Agent", "Maintenance Scheduling Agent"],
+          outputs: ["Quality certificates", "Purity test results", "Maintenance schedules"]
         }
       ]
     },
-    'corporate-banking': {
-      department: 'Corporate Banking',
-      decisionNodes: generateDecisionNodes('corporate-banking'),
-      lineageNodes: generateLineageNodes('corporate-banking'),
-      lineageEdges: generateLineageEdges('corporate-banking'),
+    'industrial-forecasting': {
+      department: 'Financial Forecasting & Scenario Analysis',
+      decisionNodes: generateDecisionNodes('industrial-forecasting'),
+      lineageNodes: generateLineageNodes('industrial-forecasting'),
+      lineageEdges: generateLineageEdges('industrial-forecasting'),
       agents: [
         {
-          name: "Corporate Credit Analyst",
-          description: "Evaluates corporate credit applications and risk profiles",
+          name: "Strategic Finance Analyst",
+          description: "Provides real-time financial forecasting and scenario analysis for large industrial projects",
           model: {
             name: "GPT-4o",
             provider: "OpenAI",
             paramSize: "1.76 trillion",
             contextLength: "128,000 tokens", 
             latency: "280ms",
-            role: "Analyzes financial statements and assesses corporate creditworthiness"
+            role: "Generates dynamic forecasts and automated scenario modeling for billion-dollar projects"
           },
-          tools: ["Financial ratio analysis", "Industry benchmarking", "Credit modeling"],
-          dataAccess: ["Corporate financials", "Industry data", "Market intelligence"]
+          tools: ["Financial modeling", "Scenario analysis", "Risk assessment", "ROI optimization"],
+          dataAccess: ["Project financials", "Market data", "Economic indicators", "Risk databases"]
         },
         {
-          name: "Cash Management Agent",
-          description: "Optimizes corporate cash flow and liquidity management",
+          name: "Market Intelligence Agent",
+          description: "Continuously monitors market conditions and commodity prices affecting project economics",
           model: {
             name: "Claude 3 Opus",
             provider: "Anthropic",
             paramSize: "1.5 trillion",
             contextLength: "200,000 tokens", 
             latency: "350ms",
-            role: "Provides cash forecasting and working capital optimization"
+            role: "Real-time market data collection and trend analysis for strategic decision making"
           },
-          tools: ["Cash flow forecasting", "Liquidity optimization", "Treasury management"],
-          dataAccess: ["Account balances", "Payment schedules", "Investment portfolios"]
+          tools: ["Market data APIs", "Price forecasting", "Volatility analysis", "Trend detection"],
+          dataAccess: ["Bloomberg terminals", "Commodity exchanges", "Financial databases", "Market reports"]
         },
         {
-          name: "Trade Finance Agent",
-          description: "Processes trade finance transactions and documentation",
+          name: "Geopolitical Risk Agent",
+          description: "Identifies potential supply chain and regulatory risks from global events",
           model: {
             name: "GPT-4 Turbo",
             provider: "OpenAI",
             paramSize: "1.76 trillion",
             contextLength: "128,000 tokens", 
             latency: "260ms",
-            role: "Automates letter of credit and trade documentation processing"
+            role: "Proactive risk identification and impact assessment from geopolitical events"
           },
-          tools: ["Document processing", "Trade compliance checking", "Settlement automation"],
-          dataAccess: ["Trade documents", "Regulatory databases", "Partner bank systems"]
+          tools: ["News sentiment analysis", "Risk probability modeling", "Impact assessment", "Alert systems"],
+          dataAccess: ["News feeds", "Government databases", "Trade publications", "Regulatory announcements"]
         },
         {
-          name: "Relationship Manager Assistant",
-          description: "Supports relationship managers with client insights and opportunities",
+          name: "Project Timeline Agent",
+          description: "Monitors project milestones and identifies potential delays or cost overruns",
           model: {
             name: "Claude 3 Sonnet",
             provider: "Anthropic",
             paramSize: "540 billion",
             contextLength: "180,000 tokens", 
             latency: "220ms",
-            role: "Identifies cross-selling opportunities and client engagement strategies"
+            role: "Real-time project monitoring and timeline optimization"
           },
-          tools: ["Client analytics", "Opportunity identification", "Relationship mapping"],
-          dataAccess: ["Client profiles", "Transaction history", "Market data"]
+          tools: ["Project management integration", "Schedule optimization", "Resource allocation", "Delay prediction"],
+          dataAccess: ["Project management systems", "Construction schedules", "Resource databases", "Contractor reports"]
+        },
+        {
+          name: "Economic Indicator Agent",
+          description: "Tracks macroeconomic trends affecting industrial demand and project viability",
+          model: {
+            name: "Llama 3 70B",
+            provider: "Meta",
+            paramSize: "70 billion",
+            contextLength: "8,000 tokens", 
+            latency: "190ms",
+            role: "Macroeconomic analysis and demand forecasting for industrial markets"
+          },
+          tools: ["Economic modeling", "Demand forecasting", "Policy analysis", "Industry benchmarking"],
+          dataAccess: ["Central bank data", "Economic databases", "Industry reports", "Government statistics"]
+        }
+      ],
+      workflow: [
+        {
+          phase: "Data Ingestion & Processing",
+          description: "Continuous collection and processing of multi-source data streams",
+          agents: ["Market Intelligence Agent", "Geopolitical Risk Agent", "Economic Indicator Agent"],
+          outputs: ["Real-time market data", "Risk assessments", "Economic forecasts", "News sentiment analysis"]
+        },
+        {
+          phase: "Scenario Generation & Analysis",
+          description: "Dynamic scenario modeling and financial impact analysis",
+          agents: ["Strategic Finance Analyst", "Project Timeline Agent"],
+          outputs: ["Financial forecasts", "Scenario models", "Risk-adjusted projections", "Timeline assessments"]
+        },
+        {
+          phase: "Decision Support & Recommendations",
+          description: "Generate actionable insights and mitigation strategies",
+          agents: ["Strategic Finance Analyst", "Geopolitical Risk Agent"],
+          outputs: ["Strategic recommendations", "Risk mitigation plans", "Investment decisions", "Stakeholder reports"]
         }
       ]
     },
-    'wealth-management': {
-      department: 'Wealth Management',
-      decisionNodes: generateDecisionNodes('wealth-management'),
-      lineageNodes: generateLineageNodes('wealth-management'),
-      lineageEdges: generateLineageEdges('wealth-management'),
+    'process-engineering': {
+      department: 'Process Engineering',
+      decisionNodes: generateDecisionNodes('process-engineering'),
+      lineageNodes: generateLineageNodes('process-engineering'),
+      lineageEdges: generateLineageEdges('process-engineering'),
       agents: [
         {
           name: "Portfolio Optimization Agent",
@@ -246,21 +280,21 @@ export const getProjectData = () => {
       ]
     },
     default: {
-      department: 'General Banking',
+      department: 'Air Separation Units',
       decisionNodes: generateDecisionNodes('default'),
       lineageNodes: generateLineageNodes('default'),
       lineageEdges: generateLineageEdges('default'),
       agents: [
         {
-          name: "General Banking Assistant",
-          description: "Handles general banking operations and customer support",
+          name: "Air Separation Process Assistant",
+          description: "Handles air separation unit operations and process optimization",
           model: {
             name: "GPT-4o",
             provider: "OpenAI",
             paramSize: "1.76 trillion",
             contextLength: "128,000 tokens", 
             latency: "220ms",
-            role: "Multi-purpose banking assistance and transaction processing"
+            role: "Multi-purpose industrial gas production and process control"
           }
         }
       ]
@@ -268,106 +302,106 @@ export const getProjectData = () => {
   };
 };
 
-// Generate consumer banking specific decision nodes
-function generateConsumerBankingDecisionNodes(): NodeType[] {
+// Generate hydrogen production specific decision nodes
+function generateHydrogenProductionDecisionNodes(): NodeType[] {
   return [
     { 
       id: 'start', 
       type: 'start', 
-      label: 'Customer Application', 
-      content: 'New customer loan application received', 
+      label: 'Production Request', 
+      content: 'New hydrogen production order received', 
       connects: ['tool1'], 
       position: { x: 50, y: 100 } 
     },
     { 
       id: 'tool1', 
       type: 'tool', 
-      label: 'KYC Verification', 
-      content: 'Performing identity and document verification', 
+      label: 'Capacity Check', 
+      content: 'Verifying production capacity and resource availability', 
       connects: ['decision1'], 
       position: { x: 250, y: 100 },
       toolDetails: { 
-        input: 'Customer documents', 
-        output: 'Verified identity', 
-        databases: ['CustomerDB'], 
-        executionTime: '2.1s', 
-        query: 'SELECT * FROM kyc_documents WHERE customer_id = ?' 
+        input: 'Production order', 
+        output: 'Capacity assessment', 
+        databases: ['ProductionDB'], 
+        executionTime: '1.8s', 
+        query: 'SELECT * FROM production_capacity WHERE facility_id = ?' 
       } 
     },
     { 
       id: 'decision1', 
       type: 'decision', 
-      label: 'KYC Status', 
-      content: 'Evaluating KYC compliance status', 
+      label: 'Capacity Status', 
+      content: 'Evaluating production capacity availability', 
       connects: ['tool2', 'alternate1'], 
       position: { x: 450, y: 100 } 
     },
     { 
       id: 'tool2', 
       type: 'tool', 
-      label: 'Credit Check', 
-      content: 'Analyzing credit history and score', 
+      label: 'Energy Assessment', 
+      content: 'Analyzing energy requirements and availability', 
       connects: ['tool3'], 
       position: { x: 650, y: 100 },
       toolDetails: { 
-        input: 'Customer ID', 
-        output: 'Credit Score & History', 
-        databases: ['CreditBureau'], 
-        executionTime: '1.8s', 
-        query: 'GET /credit-score/{customer_id}' 
+        input: 'Production requirements', 
+        output: 'Energy allocation plan', 
+        databases: ['EnergyManagement'], 
+        executionTime: '2.2s', 
+        query: 'GET /energy-availability/{production_id}' 
       } 
     },
     { 
       id: 'alternate1', 
       type: 'alternate', 
-      label: 'KYC Failed', 
-      content: 'Additional documentation required', 
+      label: 'Capacity Exceeded', 
+      content: 'Production rescheduling required', 
       connects: ['tool1'], 
       position: { x: 450, y: 250 } 
     },
     { 
       id: 'tool3', 
       type: 'tool', 
-      label: 'Risk Assessment', 
-      content: 'Calculating loan risk and terms', 
+      label: 'Safety Check', 
+      content: 'Verifying safety parameters and protocols', 
       connects: ['decision2'], 
       position: { x: 850, y: 100 },
       toolDetails: { 
-        input: 'Credit data, Income verification', 
-        output: 'Risk Score & Loan Terms', 
-        databases: ['RiskEngine'], 
-        executionTime: '3.2s', 
-        query: 'CALL calculate_loan_risk(?)' 
+        input: 'Production parameters, Safety protocols', 
+        output: 'Safety clearance & Production authorization', 
+        databases: ['SafetySystem'], 
+        executionTime: '2.8s', 
+        query: 'CALL verify_safety_protocols(?)' 
       } 
     },
     { 
       id: 'decision2', 
       type: 'decision', 
-      label: 'Approval Decision', 
-      content: 'Determining loan approval status', 
+      label: 'Production Authorization', 
+      content: 'Determining production approval status', 
       connects: ['tool4', 'alternate2'], 
       position: { x: 1050, y: 100 } 
     },
     { 
       id: 'tool4', 
       type: 'tool', 
-      label: 'Account Setup', 
-      content: 'Creating customer account and loan records', 
+      label: 'Production Start', 
+      content: 'Initiating hydrogen production process', 
       connects: ['end'], 
       position: { x: 1250, y: 100 },
       toolDetails: { 
-        input: 'Approved application', 
-        output: 'Active account & loan', 
-        databases: ['CoreBanking'], 
-        executionTime: '1.5s', 
-        query: 'INSERT INTO accounts (customer_id, loan_amount, terms)' 
+        input: 'Approved production order', 
+        output: 'Active production & monitoring', 
+        databases: ['ProductionControl'], 
+        executionTime: '1.2s', 
+        query: 'INSERT INTO production_runs (order_id, facility_id, start_time)' 
       } 
     },
     { 
       id: 'alternate2', 
       type: 'alternate', 
-      label: 'Application Declined', 
-      content: 'Risk assessment indicates high risk', 
+      label: 'Production Delayed', 
+      content: 'Safety assessment requires additional review', 
       connects: ['end'], 
       position: { x: 1050, y: 250 } 
     },
@@ -375,49 +409,49 @@ function generateConsumerBankingDecisionNodes(): NodeType[] {
       id: 'end', 
       type: 'end', 
       label: 'Process Complete', 
-      content: 'Customer application processed', 
+      content: 'Hydrogen production order processed', 
       connects: [], 
       position: { x: 1250, y: 250 } 
     },
   ];
 }
 
-// Generate consumer banking specific lineage nodes
-function generateConsumerBankingLineageNodes(): any[] {
+// Generate hydrogen production specific lineage nodes
+function generateHydrogenProductionLineageNodes(): any[] {
   return [
-    { id: 'customerdb', type: 'database', label: 'Customer DB', content: 'Customer profiles and KYC data', position: { x: 50, y: 400 }, isCombinedView: true },
-    { id: 'creditbureau', type: 'api', label: 'Credit Bureau API', content: 'External credit scoring service', position: { x: 250, y: 400 }, isCombinedView: true },
-    { id: 'kycdata', type: 'file', label: 'KYC Data', content: 'Identity verification documents', position: { x: 450, y: 400 }, isCombinedView: true },
-    { id: 'riskengine', type: 'database', label: 'Risk Engine', content: 'Loan risk assessment system', position: { x: 650, y: 400 }, isCombinedView: true },
-    { id: 'creditscores', type: 'transformation', label: 'Credit Scores', content: 'Processed credit assessments', position: { x: 850, y: 400 }, isCombinedView: true },
-    { id: 'corebanking', type: 'database', label: 'Core Banking', content: 'Account and transaction systems', position: { x: 1050, y: 400 }, isCombinedView: true },
-    { id: 'loanrecords', type: 'file', label: 'Loan Records', content: 'Approved loan documentation', position: { x: 1250, y: 400 }, isCombinedView: true },
+    { id: 'productiondb', type: 'database', label: 'Production DB', content: 'Production orders and capacity data', position: { x: 50, y: 400 }, isCombinedView: true },
+    { id: 'energyapi', type: 'api', label: 'Energy Management API', content: 'Energy allocation and monitoring service', position: { x: 250, y: 400 }, isCombinedView: true },
+    { id: 'capacitydata', type: 'file', label: 'Capacity Data', content: 'Production facility capacity information', position: { x: 450, y: 400 }, isCombinedView: true },
+    { id: 'safetysystem', type: 'database', label: 'Safety System', content: 'Safety protocols and monitoring', position: { x: 650, y: 400 }, isCombinedView: true },
+    { id: 'energyallocation', type: 'transformation', label: 'Energy Allocation', content: 'Optimized energy distribution plans', position: { x: 850, y: 400 }, isCombinedView: true },
+    { id: 'productioncontrol', type: 'database', label: 'Production Control', content: 'Active production monitoring systems', position: { x: 1050, y: 400 }, isCombinedView: true },
+    { id: 'productionrecords', type: 'file', label: 'Production Records', content: 'Completed production documentation', position: { x: 1250, y: 400 }, isCombinedView: true },
   ];
 }
 
-// Generate consumer banking specific lineage edges
-function generateConsumerBankingLineageEdges(): any[] {
+// Generate hydrogen production specific lineage edges
+function generateHydrogenProductionLineageEdges(): any[] {
   return [
-    { source: 'customerdb', target: 'kycdata', type: 'data_flow' },
-    { source: 'creditbureau', target: 'creditscores', type: 'data_flow' },
-    { source: 'kycdata', target: 'riskengine', type: 'transformation' },
-    { source: 'creditscores', target: 'riskengine', type: 'data_flow' },
-    { source: 'riskengine', target: 'corebanking', type: 'dependency' },
-    { source: 'corebanking', target: 'loanrecords', type: 'data_flow' },
+    { source: 'productiondb', target: 'capacitydata', type: 'data_flow' },
+    { source: 'energyapi', target: 'energyallocation', type: 'data_flow' },
+    { source: 'capacitydata', target: 'safetysystem', type: 'transformation' },
+    { source: 'energyallocation', target: 'safetysystem', type: 'data_flow' },
+    { source: 'safetysystem', target: 'productioncontrol', type: 'dependency' },
+    { source: 'productioncontrol', target: 'productionrecords', type: 'data_flow' },
   ];
 }
 
-// Helper functions to generate mock data for other banking projects
+// Helper functions to generate mock data for other industrial projects
 function generateDecisionNodes(projectId: string): NodeType[] {
   const baseNodes: NodeType[] = [
-    { id: 'start', type: 'start', label: 'Start Process', content: 'Banking process initiated', connects: ['tool1'], position: { x: 50, y: 100 } },
-    { id: 'tool1', type: 'tool', label: 'Data Collection', content: 'Gathering required financial data', connects: ['decision1'], position: { x: 250, y: 100 }, toolDetails: { input: 'Client request', output: 'Financial data', databases: ['BankingDB'], executionTime: '0.8s', query: 'SELECT * FROM accounts WHERE ...' } },
+    { id: 'start', type: 'start', label: 'Start Process', content: 'Industrial process initiated', connects: ['tool1'], position: { x: 50, y: 100 } },
+    { id: 'tool1', type: 'tool', label: 'Data Collection', content: 'Gathering required operational data', connects: ['decision1'], position: { x: 250, y: 100 }, toolDetails: { input: 'Process request', output: 'Operational data', databases: ['IndustrialDB'], executionTime: '0.8s', query: 'SELECT * FROM operations WHERE ...' } },
     { id: 'decision1', type: 'decision', label: 'Compliance Check', content: 'Verifying regulatory compliance', connects: ['tool2', 'alternate1'], position: { x: 450, y: 100 } },
-    { id: 'tool2', type: 'tool', label: 'Risk Analysis', content: 'Analyzing financial risk factors', connects: ['decision2'], position: { x: 650, y: 100 }, toolDetails: { input: 'Financial data', output: 'Risk assessment', databases: ['RiskDB'], executionTime: '1.2s', query: 'CALL risk_analysis(...)' } },
+    { id: 'tool2', type: 'tool', label: 'Risk Analysis', content: 'Analyzing operational risk factors', connects: ['decision2'], position: { x: 650, y: 100 }, toolDetails: { input: 'Operational data', output: 'Risk assessment', databases: ['RiskDB'], executionTime: '1.2s', query: 'CALL risk_analysis(...)' } },
     { id: 'alternate1', type: 'alternate', label: 'Compliance Issue', content: 'Additional review required', connects: ['end'], position: { x: 450, y: 250 } },
     { id: 'decision2', type: 'decision', label: 'Approval Gate', content: 'Final approval decision', connects: ['tool3'], position: { x: 850, y: 100 } },
-    { id: 'tool3', type: 'tool', label: 'Execute Transaction', content: 'Processing approved transaction', connects: ['end'], position: { x: 1050, y: 100 }, toolDetails: { input: 'Approved request', output: 'Completed transaction', databases: ['TransactionDB'], executionTime: '0.5s', query: 'INSERT INTO transactions ...' } },
-    { id: 'end', type: 'end', label: 'Process Complete', content: 'Banking process completed', connects: [], position: { x: 1050, y: 250 } },
+    { id: 'tool3', type: 'tool', label: 'Execute Operation', content: 'Processing approved operation', connects: ['end'], position: { x: 1050, y: 100 }, toolDetails: { input: 'Approved request', output: 'Completed operation', databases: ['OperationsDB'], executionTime: '0.5s', query: 'INSERT INTO operations ...' } },
+    { id: 'end', type: 'end', label: 'Process Complete', content: 'Industrial process completed', connects: [], position: { x: 1050, y: 250 } },
   ];
 
   return baseNodes;
@@ -425,9 +459,9 @@ function generateDecisionNodes(projectId: string): NodeType[] {
 
 function generateLineageNodes(projectId: string): any[] {
   const baseNodes = [
-    { id: 'bankingdb', type: 'database', label: 'Banking DB', content: 'Core banking system data', position: { x: 50, y: 350 } },
+    { id: 'industrialdb', type: 'database', label: 'Industrial DB', content: 'Core industrial system data', position: { x: 50, y: 350 } },
     { id: 'clientrequest', type: 'api', label: 'Client Request', content: 'Customer service requests', position: { x: 250, y: 350 } },
-    { id: 'financialdata', type: 'file', label: 'Financial Data', content: 'Processed financial information', position: { x: 450, y: 350 } },
+    { id: 'operationaldata', type: 'file', label: 'Operational Data', content: 'Processed operational information', position: { x: 450, y: 350 } },
     { id: 'riskassessment', type: 'transformation', label: 'Risk Assessment', content: 'Analyzed risk metrics', position: { x: 650, y: 350 } },
     { id: 'riskdb', type: 'database', label: 'Risk DB', content: 'Risk management system', position: { x: 850, y: 350 } },
     { id: 'transactiondb', type: 'database', label: 'Transaction DB', content: 'Transaction processing system', position: { x: 1050, y: 350 } },
@@ -439,9 +473,9 @@ function generateLineageNodes(projectId: string): any[] {
 
 function generateLineageEdges(projectId: string): any[] {
   return [
-    { source: 'bankingdb', target: 'financialdata', type: 'data_flow' },
-    { source: 'clientrequest', target: 'financialdata', type: 'data_flow' },
-    { source: 'financialdata', target: 'riskassessment', type: 'transformation' },
+    { source: 'industrialdb', target: 'operationaldata', type: 'data_flow' },
+    { source: 'clientrequest', target: 'operationaldata', type: 'data_flow' },
+    { source: 'operationaldata', target: 'riskassessment', type: 'transformation' },
     { source: 'riskassessment', target: 'riskdb', type: 'data_flow' },
     { source: 'riskdb', target: 'transactiondb', type: 'dependency' },
     { source: 'transactiondb', target: 'completedtransaction', type: 'data_flow' },
@@ -507,3 +541,330 @@ export const dataLineageMetadata = {
     },
   },
 };
+
+// Generate forecasting specific decision nodes
+function generateForecastingDecisionNodes(): NodeType[] {
+  return [
+    { 
+      id: 'start', 
+      type: 'start', 
+      label: 'Market Analysis Request', 
+      content: 'New financial forecasting request received', 
+      connects: ['tool1'], 
+      position: { x: 50, y: 100 } 
+    },
+    { 
+      id: 'tool1', 
+      type: 'tool', 
+      label: 'Data Collection', 
+      content: 'Gathering market data and economic indicators', 
+      connects: ['decision1'], 
+      position: { x: 250, y: 100 },
+      toolDetails: { 
+        input: 'Market request', 
+        output: 'Market data', 
+        databases: ['MarketDB'], 
+        executionTime: '2.5s', 
+        query: 'SELECT * FROM market_data WHERE date >= ?' 
+      } 
+    },
+    { 
+      id: 'decision1', 
+      type: 'decision', 
+      label: 'Data Quality Check', 
+      content: 'Evaluating data completeness and accuracy', 
+      connects: ['tool2', 'alternate1'], 
+      position: { x: 450, y: 100 } 
+    },
+    { 
+      id: 'tool2', 
+      type: 'tool', 
+      label: 'Scenario Modeling', 
+      content: 'Running financial scenario analysis', 
+      connects: ['tool3'], 
+      position: { x: 650, y: 100 },
+      toolDetails: { 
+        input: 'Market data', 
+        output: 'Scenario models', 
+        databases: ['ScenarioEngine'], 
+        executionTime: '4.2s', 
+        query: 'CALL run_scenario_analysis(?)' 
+      } 
+    },
+    { 
+      id: 'alternate1', 
+      type: 'alternate', 
+      label: 'Data Insufficient', 
+      content: 'Additional data sources required', 
+      connects: ['tool1'], 
+      position: { x: 450, y: 250 } 
+    },
+    { 
+      id: 'tool3', 
+      type: 'tool', 
+      label: 'Risk Assessment', 
+      content: 'Analyzing potential risks and mitigation strategies', 
+      connects: ['decision2'], 
+      position: { x: 850, y: 100 },
+      toolDetails: { 
+        input: 'Scenario models', 
+        output: 'Risk assessment & recommendations', 
+        databases: ['RiskEngine'], 
+        executionTime: '3.8s', 
+        query: 'CALL assess_financial_risks(?)' 
+      } 
+    },
+    { 
+      id: 'decision2', 
+      type: 'decision', 
+      label: 'Forecast Approval', 
+      content: 'Determining forecast confidence and approval', 
+      connects: ['tool4', 'alternate2'], 
+      position: { x: 1050, y: 100 } 
+    },
+    { 
+      id: 'tool4', 
+      type: 'tool', 
+      label: 'Report Generation', 
+      content: 'Creating comprehensive forecast report', 
+      connects: ['end'], 
+      position: { x: 1250, y: 100 },
+      toolDetails: { 
+        input: 'Risk assessment', 
+        output: 'Forecast report & recommendations', 
+        databases: ['ReportingDB'], 
+        executionTime: '2.1s', 
+        query: 'INSERT INTO forecast_reports (analysis_id, recommendations)' 
+      } 
+    },
+    { 
+      id: 'alternate2', 
+      type: 'alternate', 
+      label: 'Low Confidence', 
+      content: 'Forecast confidence below threshold', 
+      connects: ['end'], 
+      position: { x: 1050, y: 250 } 
+    },
+    { 
+      id: 'end', 
+      type: 'end', 
+      label: 'Analysis Complete', 
+      content: 'Financial forecasting analysis completed', 
+      connects: [], 
+      position: { x: 1250, y: 250 } 
+    },
+  ];
+}
+
+// Generate forecasting specific lineage nodes
+function generateForecastingLineageNodes(): any[] {
+  return [
+    { id: 'marketdb', type: 'database', label: 'Market DB', content: 'Market data and economic indicators', position: { x: 50, y: 400 }, isCombinedView: true },
+    { id: 'economicapi', type: 'api', label: 'Economic Data API', content: 'Real-time economic indicators service', position: { x: 250, y: 400 }, isCombinedView: true },
+    { id: 'marketdata', type: 'file', label: 'Market Data', content: 'Processed market information', position: { x: 450, y: 400 }, isCombinedView: true },
+    { id: 'scenarioengine', type: 'database', label: 'Scenario Engine', content: 'Financial modeling and scenario analysis', position: { x: 650, y: 400 }, isCombinedView: true },
+    { id: 'scenariomodels', type: 'transformation', label: 'Scenario Models', content: 'Generated financial scenarios', position: { x: 850, y: 400 }, isCombinedView: true },
+    { id: 'riskengine', type: 'database', label: 'Risk Engine', content: 'Risk assessment and mitigation systems', position: { x: 1050, y: 400 }, isCombinedView: true },
+    { id: 'forecastreports', type: 'file', label: 'Forecast Reports', content: 'Completed forecast documentation', position: { x: 1250, y: 400 }, isCombinedView: true },
+  ];
+}
+
+// Generate forecasting specific lineage edges
+function generateForecastingLineageEdges(): any[] {
+  return [
+    { source: 'marketdb', target: 'marketdata', type: 'data_flow' },
+    { source: 'economicapi', target: 'scenariomodels', type: 'data_flow' },
+    { source: 'marketdata', target: 'scenarioengine', type: 'transformation' },
+    { source: 'scenariomodels', target: 'riskengine', type: 'data_flow' },
+    { source: 'riskengine', target: 'forecastreports', type: 'dependency' },
+    { source: 'scenarioengine', target: 'forecastreports', type: 'data_flow' },
+  ];
+}
+
+// Banking project data
+export const getBankingProjectData = () => {
+  return {
+    'wealth-management': {
+      department: 'Wealth Management',
+      decisionNodes: generateWealthManagementDecisionNodes(),
+      lineageNodes: generateWealthManagementLineageNodes(),
+      lineageEdges: generateWealthManagementLineageEdges(),
+      agents: [
+        {
+          name: "Portfolio Manager Agent",
+          description: "Manages investment portfolios and asset allocation strategies",
+          model: {
+            name: "GPT-4o",
+            provider: "OpenAI",
+            paramSize: "1.76 trillion",
+            contextLength: "128,000 tokens", 
+            latency: "250ms",
+            role: "Optimizes portfolio allocation and manages investment strategies"
+          },
+          tools: ["Portfolio optimization", "Risk assessment", "Market analysis"],
+          dataAccess: ["Market data", "Client portfolios", "Risk metrics"]
+        },
+        {
+          name: "Risk Assessment Agent",
+          description: "Analyzes and monitors investment risks across portfolios",
+          model: {
+            name: "Claude 3 Opus",
+            provider: "Anthropic",
+            paramSize: "1.5 trillion",
+            contextLength: "200,000 tokens", 
+            latency: "320ms",
+            role: "Evaluates risk exposure and compliance with risk parameters"
+          },
+          tools: ["Risk modeling", "Stress testing", "Compliance monitoring"],
+          dataAccess: ["Risk databases", "Market volatility data", "Regulatory requirements"]
+        },
+        {
+          name: "Client Advisory Agent",
+          description: "Provides personalized investment advice and client communication",
+          model: {
+            name: "Llama 3 70B",
+            provider: "Meta",
+            paramSize: "70 billion",
+            contextLength: "8,000 tokens", 
+            latency: "180ms",
+            role: "Delivers personalized investment recommendations and client insights"
+          },
+          tools: ["Client profiling", "Investment recommendations", "Communication tools"],
+          dataAccess: ["Client data", "Investment preferences", "Performance reports"]
+        }
+      ]
+    },
+    'risk-analytics': {
+      department: 'Risk Management',
+      decisionNodes: generateRiskAnalyticsDecisionNodes(),
+      lineageNodes: generateRiskAnalyticsLineageNodes(),
+      lineageEdges: generateRiskAnalyticsLineageEdges(),
+      agents: [
+        {
+          name: "Credit Risk Agent",
+          description: "Assesses credit risk for loan applications and existing portfolios",
+          model: {
+            name: "GPT-4o",
+            provider: "OpenAI",
+            paramSize: "1.76 trillion",
+            contextLength: "128,000 tokens", 
+            latency: "250ms",
+            role: "Evaluates creditworthiness and default probability"
+          },
+          tools: ["Credit scoring", "Default prediction", "Risk modeling"],
+          dataAccess: ["Credit bureaus", "Financial statements", "Payment history"]
+        }
+      ]
+    },
+    'fraud-detection': {
+      department: 'Security Operations',
+      decisionNodes: generateFraudDetectionDecisionNodes(),
+      lineageNodes: generateFraudDetectionLineageNodes(),
+      lineageEdges: generateFraudDetectionLineageEdges(),
+      agents: [
+        {
+          name: "Fraud Detection Agent",
+          description: "Monitors transactions for fraudulent activity in real-time",
+          model: {
+            name: "Claude 3 Opus",
+            provider: "Anthropic",
+            paramSize: "1.5 trillion",
+            contextLength: "200,000 tokens", 
+            latency: "320ms",
+            role: "Identifies suspicious patterns and prevents fraudulent transactions"
+          },
+          tools: ["Pattern recognition", "Anomaly detection", "Real-time monitoring"],
+          dataAccess: ["Transaction data", "Customer behavior", "Fraud databases"]
+        }
+      ]
+    }
+  };
+};
+
+// Generate banking decision nodes
+function generateWealthManagementDecisionNodes(): NodeType[] {
+  return [
+    { id: 'start', type: 'start', label: 'Client Portfolio Review', content: 'Wealth management process initiated', connects: ['tool1'], position: { x: 50, y: 100 } },
+    { id: 'tool1', type: 'tool', label: 'Portfolio Analysis', content: 'Analyzing current portfolio performance', connects: ['decision1'], position: { x: 250, y: 100 }, toolDetails: { input: 'Portfolio data', output: 'Performance metrics', databases: ['PortfolioDB'], executionTime: '1.2s', query: 'SELECT * FROM portfolios WHERE ...' } },
+    { id: 'decision1', type: 'decision', label: 'Risk Assessment', content: 'Evaluating portfolio risk levels', connects: ['tool2', 'alternate1'], position: { x: 450, y: 100 } },
+    { id: 'tool2', type: 'tool', label: 'Rebalancing', content: 'Optimizing asset allocation', connects: ['end'], position: { x: 650, y: 100 }, toolDetails: { input: 'Risk metrics', output: 'Rebalanced portfolio', databases: ['AssetDB'], executionTime: '0.8s', query: 'UPDATE portfolios SET ...' } },
+    { id: 'alternate1', type: 'alternate', label: 'High Risk Alert', content: 'Portfolio exceeds risk tolerance', connects: ['end'], position: { x: 450, y: 250 } },
+    { id: 'end', type: 'end', label: 'Portfolio Updated', content: 'Wealth management process completed', connects: [], position: { x: 850, y: 100 } }
+  ];
+}
+
+function generateRiskAnalyticsDecisionNodes(): NodeType[] {
+  return [
+    { id: 'start', type: 'start', label: 'Credit Application', content: 'Credit risk assessment initiated', connects: ['tool1'], position: { x: 50, y: 100 } },
+    { id: 'tool1', type: 'tool', label: 'Credit Check', content: 'Retrieving credit history and scores', connects: ['decision1'], position: { x: 250, y: 100 }, toolDetails: { input: 'Applicant data', output: 'Credit report', databases: ['CreditDB'], executionTime: '0.5s', query: 'SELECT * FROM credit_reports WHERE ...' } },
+    { id: 'decision1', type: 'decision', label: 'Risk Evaluation', content: 'Assessing default probability', connects: ['tool2', 'alternate1'], position: { x: 450, y: 100 } },
+    { id: 'tool2', type: 'tool', label: 'Loan Approval', content: 'Processing approved loan application', connects: ['end'], position: { x: 650, y: 100 }, toolDetails: { input: 'Risk assessment', output: 'Loan terms', databases: ['LoanDB'], executionTime: '0.3s', query: 'INSERT INTO loans ...' } },
+    { id: 'alternate1', type: 'alternate', label: 'High Risk', content: 'Application requires manual review', connects: ['end'], position: { x: 450, y: 250 } },
+    { id: 'end', type: 'end', label: 'Decision Made', content: 'Credit assessment completed', connects: [], position: { x: 850, y: 100 } }
+  ];
+}
+
+function generateFraudDetectionDecisionNodes(): NodeType[] {
+  return [
+    { id: 'start', type: 'start', label: 'Transaction Monitor', content: 'Real-time transaction monitoring', connects: ['tool1'], position: { x: 50, y: 100 } },
+    { id: 'tool1', type: 'tool', label: 'Pattern Analysis', content: 'Analyzing transaction patterns', connects: ['decision1'], position: { x: 250, y: 100 }, toolDetails: { input: 'Transaction data', output: 'Risk score', databases: ['TransactionDB'], executionTime: '0.1s', query: 'SELECT * FROM transactions WHERE ...' } },
+    { id: 'decision1', type: 'decision', label: 'Fraud Check', content: 'Evaluating fraud probability', connects: ['tool2', 'alternate1'], position: { x: 450, y: 100 } },
+    { id: 'tool2', type: 'tool', label: 'Transaction Approved', content: 'Processing legitimate transaction', connects: ['end'], position: { x: 650, y: 100 }, toolDetails: { input: 'Verified transaction', output: 'Approval', databases: ['ApprovalDB'], executionTime: '0.05s', query: 'UPDATE transactions SET status = approved' } },
+    { id: 'alternate1', type: 'alternate', label: 'Fraud Alert', content: 'Suspicious activity detected', connects: ['end'], position: { x: 450, y: 250 } },
+    { id: 'end', type: 'end', label: 'Transaction Complete', content: 'Fraud detection process completed', connects: [], position: { x: 850, y: 100 } }
+  ];
+}
+
+// Generate banking lineage nodes (simplified)
+function generateWealthManagementLineageNodes(): any[] {
+  return [
+    { id: 'clientdb', type: 'database', label: 'Client DB', content: 'Client portfolio data', position: { x: 50, y: 350 } },
+    { id: 'marketapi', type: 'api', label: 'Market Data API', content: 'Real-time market prices', position: { x: 250, y: 350 } },
+    { id: 'portfolioengine', type: 'transformation', label: 'Portfolio Engine', content: 'Portfolio optimization', position: { x: 450, y: 350 } },
+    { id: 'riskdb', type: 'database', label: 'Risk DB', content: 'Risk assessment data', position: { x: 650, y: 350 } },
+    { id: 'portfolioreport', type: 'file', label: 'Portfolio Report', content: 'Client portfolio summary', position: { x: 850, y: 350 } }
+  ];
+}
+
+function generateRiskAnalyticsLineageNodes(): any[] {
+  return [
+    { id: 'creditdb', type: 'database', label: 'Credit DB', content: 'Credit history data', position: { x: 50, y: 350 } },
+    { id: 'riskengine', type: 'transformation', label: 'Risk Engine', content: 'Credit risk assessment', position: { x: 250, y: 350 } },
+    { id: 'loandb', type: 'database', label: 'Loan DB', content: 'Loan application data', position: { x: 450, y: 350 } }
+  ];
+}
+
+function generateFraudDetectionLineageNodes(): any[] {
+  return [
+    { id: 'transactiondb', type: 'database', label: 'Transaction DB', content: 'Real-time transactions', position: { x: 50, y: 350 } },
+    { id: 'fraudengine', type: 'transformation', label: 'Fraud Engine', content: 'Fraud detection algorithms', position: { x: 250, y: 350 } },
+    { id: 'alertdb', type: 'database', label: 'Alert DB', content: 'Fraud alerts and logs', position: { x: 450, y: 350 } }
+  ];
+}
+
+// Generate banking lineage edges (simplified)
+function generateWealthManagementLineageEdges(): any[] {
+  return [
+    { source: 'clientdb', target: 'portfolioengine', type: 'data_flow' },
+    { source: 'marketapi', target: 'portfolioengine', type: 'data_flow' },
+    { source: 'portfolioengine', target: 'riskdb', type: 'transformation' },
+    { source: 'riskdb', target: 'portfolioreport', type: 'data_flow' }
+  ];
+}
+
+function generateRiskAnalyticsLineageEdges(): any[] {
+  return [
+    { source: 'creditdb', target: 'riskengine', type: 'data_flow' },
+    { source: 'riskengine', target: 'loandb', type: 'data_flow' }
+  ];
+}
+
+function generateFraudDetectionLineageEdges(): any[] {
+  return [
+    { source: 'transactiondb', target: 'fraudengine', type: 'data_flow' },
+    { source: 'fraudengine', target: 'alertdb', type: 'data_flow' }
+  ];
+}
+
+
+

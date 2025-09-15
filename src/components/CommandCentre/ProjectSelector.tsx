@@ -15,19 +15,19 @@ interface ProjectSelectorProps {
   setSelectedProject: (project: string) => void;
 }
 
-// Project display names mapping for banking
+// Project display names mapping for Air Liquide industrial
 const projectDisplayNames = {
-  'consumer-banking': 'Consumer Banking',
-  'corporate-banking': 'Corporate Banking',
-  'wealth-management': 'Wealth Management',
-  'default': 'General Banking'
+  'hydrogen-production': 'Hydrogen Production',
+  'industrial-forecasting': 'Financial Forecasting & Scenario Analysis',
+  'process-engineering': 'Process Engineering',
+  'default': 'Air Separation Units'
 };
 
-// Project icons mapping for banking
+// Project icons mapping for Air Liquide industrial
 const projectIcons: Record<string, React.ReactNode> = {
-  'consumer-banking': <Users size={16} className="text-beam-blue" />,
-  'corporate-banking': <Building2 size={16} className="text-purple-500" />,
-  'wealth-management': <TrendingUp size={16} className="text-green-500" />,
+  'hydrogen-production': <Users size={16} className="text-beam-blue" />,
+  'industrial-forecasting': <Building2 size={16} className="text-purple-500" />,
+  'process-engineering': <TrendingUp size={16} className="text-green-500" />,
   'default': <CreditCard size={16} className="text-gray-500" />
 };
 

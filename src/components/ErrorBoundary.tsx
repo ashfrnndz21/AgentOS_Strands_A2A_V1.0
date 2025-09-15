@@ -1,15 +1,13 @@
 import React from 'react';
-import { AlertCircle, RefreshCw } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
 interface ErrorBoundaryState {
   hasError: boolean;
   error?: Error;
+  errorInfo?: React.ErrorInfo;
 }
 
 interface ErrorBoundaryProps {
   children: React.ReactNode;
-  fallback?: React.ReactNode;
 }
 
 export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
@@ -24,47 +22,36 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
+    this.setState({ error, errorInfo });
   }
 
   render() {
     if (this.state.hasError) {
-      if (this.props.fallback) {
-        return this.props.fallback;
-      }
-
       return (
-        <div className="flex flex-col items-center justify-center min-h-[400px] p-8 text-center">
-          <div className="rounded-full bg-red-500/20 p-3 mb-4">
-            <AlertCircle className="h-12 w-12 text-red-400" />
-          </div>
-          <h2 className="text-xl font-semibold text-white mb-2">Something went wrong</h2>
-          <p className="text-gray-400 mb-6 max-w-md">
-            An unexpected error occurred. Please try refreshing the page or contact support if the problem persists.
-          </p>
-          <div className="flex gap-3">
-            <Button
-              onClick={() => window.location.reload()}
-              className="bg-blue-600 hover:bg-blue-700"
-            >
-              <RefreshCw className="h-4 w-4 mr-2" />
-              Refresh Page
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => this.setState({ hasError: false })}
-              className="border-gray-600 text-white hover:bg-gray-800"
-            >
-              Try Again
-            </Button>
-          </div>
-          {process.env.NODE_ENV === 'development' && this.state.error && (
-            <details className="mt-6 text-left">
-              <summary className="text-sm text-gray-400 cursor-pointer">Error Details</summary>
-              <pre className="mt-2 text-xs text-red-400 bg-gray-900 p-3 rounded overflow-auto max-w-md">
-                {this.state.error.toString()}
+        <div className="min-h-screen bg-gray-900 text-white p-6">
+          <div className="max-w-4xl mx-auto">
+            <h1 className="text-3xl font-bold text-red-400 mb-4">Something went wrong</h1>
+            <div className="bg-gray-800 p-4 rounded-lg mb-4">
+              <h2 className="text-xl font-semibold mb-2">Error Details:</h2>
+              <pre className="text-red-300 text-sm overflow-auto">
+                {this.state.error?.toString()}
               </pre>
-            </details>
-          )}
+            </div>
+            {this.state.errorInfo && (
+              <div className="bg-gray-800 p-4 rounded-lg">
+                <h2 className="text-xl font-semibold mb-2">Component Stack:</h2>
+                <pre className="text-gray-300 text-sm overflow-auto">
+                  {this.state.errorInfo.componentStack}
+                </pre>
+              </div>
+            )}
+            <button 
+              onClick={() => window.location.reload()} 
+              className="mt-4 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded"
+            >
+              Reload Page
+            </button>
+          </div>
         </div>
       );
     }

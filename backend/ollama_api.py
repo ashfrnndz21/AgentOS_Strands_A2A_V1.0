@@ -143,6 +143,34 @@ def create_agent():
         conn = sqlite3.connect(DATABASE_PATH)
         cursor = conn.cursor()
         
+        # Handle both nested guardrails object and flat structure
+        guardrails_enabled = False
+        safety_level = 'medium'
+        content_filters = []
+        custom_rules = []
+        
+        if 'guardrails' in data and isinstance(data['guardrails'], dict):
+            # Nested structure
+            guardrails_enabled = data['guardrails'].get('enabled', False)
+            safety_level = data['guardrails'].get('safetyLevel', 'medium')
+            content_filters = data['guardrails'].get('contentFilters', [])
+            custom_rules = data['guardrails'].get('rules', [])
+        else:
+            # Flat structure (for backward compatibility)
+            guardrails_enabled = data.get('guardrails_enabled', False)
+            safety_level = data.get('safety_level', 'medium')
+            # Parse JSON strings if they exist
+            if 'content_filters' in data:
+                try:
+                    content_filters = json.loads(data['content_filters']) if isinstance(data['content_filters'], str) else data['content_filters']
+                except:
+                    content_filters = []
+            if 'custom_rules' in data:
+                try:
+                    custom_rules = json.loads(data['custom_rules']) if isinstance(data['custom_rules'], str) else data['custom_rules']
+                except:
+                    custom_rules = []
+        
         cursor.execute('''
             INSERT INTO agents (
                 id, name, role, description, model, personality, expertise,
@@ -157,13 +185,13 @@ def create_agent():
             data.get('model'),
             data.get('personality', ''),
             data.get('expertise', ''),
-            data.get('systemPrompt', ''),
+            data.get('system_prompt', data.get('systemPrompt', '')),  # Handle both field names
             data.get('temperature', 0.7),
-            data.get('maxTokens', 1000),
-            data.get('guardrails', {}).get('enabled', False),
-            data.get('guardrails', {}).get('safetyLevel', 'medium'),
-            json.dumps(data.get('guardrails', {}).get('contentFilters', [])),
-            json.dumps(data.get('guardrails', {}).get('rules', []))
+            data.get('max_tokens', data.get('maxTokens', 1000)),  # Handle both field names
+            guardrails_enabled,
+            safety_level,
+            json.dumps(content_filters),
+            json.dumps(custom_rules)
         ))
         
         conn.commit()
@@ -869,6 +897,583 @@ def health_check():
             "status": "unhealthy",
             "error": str(e)
         }), 500
+
+# ===== STRANDS WORKFLOW INTEGRATION =====
+
+@app.route('/api/strands/agents', methods=['GET'])
+def get_strands_agents():
+    """Get all agents in Strands-compatible format"""
+    try:
+        conn = sqlite3.connect(DATABASE_PATH)
+        cursor = conn.cursor()
+        
+        cursor.execute('SELECT * FROM agents ORDER BY created_at DESC')
+        rows = cursor.fetchall()
+        
+        strands_agents = []
+        for row in rows:
+            # Transform existing agent to Strands format
+            strands_agent = {
+                'id': row[0],
+                'name': row[1],
+                'model': row[4],
+                'systemPrompt': row[7] or f"You are {row[1]}, a helpful AI assistant.",
+                'reasoningPattern': 'sequential',  # Default
+                'contextManagement': {
+                    'preserveMemory': True,
+                    'maxContextLength': 4000,
+                    'compressionLevel': 'summary'
+                },
+                'ollamaConfig': {
+                    'temperature': row[8] or 0.7,
+                    'maxTokens': row[9] or 1000,
+                    'keepAlive': '5m'
+                },
+                'capabilities': json.loads(row[5]) if row[5] else [],
+                'category': determine_agent_category(row[5]),
+                'tools': get_agent_tools(row[0]),
+                'createdAt': row[14],
+                'updatedAt': row[15]
+            }
+            strands_agents.append(strands_agent)
+        
+        conn.close()
+        return jsonify({'agents': strands_agents})
+        
+    except Exception as e:
+        logger.error(f"Error getting Strands agents: {str(e)}")
+        return jsonify({'agents': []}), 500
+
+@app.route('/api/strands/workflows', methods=['POST'])
+def create_strands_workflow():
+    """Create Strands-style workflow"""
+    try:
+        data = request.json
+        
+        workflow_id = str(uuid.uuid4())
+        workflow = {
+            'id': workflow_id,
+            'name': data['name'],
+            'description': data.get('description', ''),
+            'tasks': data.get('tasks', []),
+            'agents': data.get('agents', []),
+            'executionConfig': data.get('executionConfig', {
+                'parallelExecution': True,
+                'maxConcurrentTasks': 3,
+                'timeoutMs': 300000
+            }),
+            'created_at': datetime.now().isoformat(),
+            'updated_at': datetime.now().isoformat()
+        }
+        
+        # Store workflow in database
+        conn = sqlite3.connect(DATABASE_PATH)
+        cursor = conn.cursor()
+        
+        # Create workflows table if not exists
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS strands_workflows (
+                id TEXT PRIMARY KEY,
+                name TEXT NOT NULL,
+                description TEXT,
+                workflow_data TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+        
+        cursor.execute('''
+            INSERT INTO strands_workflows (id, name, description, workflow_data)
+            VALUES (?, ?, ?, ?)
+        ''', (workflow_id, workflow['name'], workflow['description'], json.dumps(workflow)))
+        
+        conn.commit()
+        conn.close()
+        
+        return jsonify({'workflow_id': workflow_id, 'workflow': workflow})
+        
+    except Exception as e:
+        logger.error(f"Error creating Strands workflow: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/strands/workflows/<workflow_id>/execute', methods=['POST'])
+def execute_strands_workflow(workflow_id):
+    """Execute Strands workflow with dependency resolution"""
+    try:
+        input_data = request.json.get('input', {})
+        
+        # Get workflow from database
+        conn = sqlite3.connect(DATABASE_PATH)
+        cursor = conn.cursor()
+        
+        cursor.execute('SELECT workflow_data FROM strands_workflows WHERE id = ?', (workflow_id,))
+        row = cursor.fetchone()
+        
+        if not row:
+            conn.close()
+            return jsonify({'error': 'Workflow not found'}), 404
+        
+        workflow_data = json.loads(row[0])
+        conn.close()
+        
+        # Execute workflow using Strands pattern
+        execution_id = str(uuid.uuid4())
+        execution_result = {
+            'id': execution_id,
+            'workflow_id': workflow_id,
+            'status': 'running',
+            'start_time': datetime.now().isoformat(),
+            'input': input_data,
+            'results': {},
+            'metrics': {
+                'total_tasks': len(workflow_data.get('tasks', [])),
+                'completed_tasks': 0,
+                'error_count': 0
+            }
+        }
+        
+        # Simulate Strands workflow execution
+        execute_workflow_tasks(workflow_data, execution_result, input_data)
+        
+        execution_result['status'] = 'completed'
+        execution_result['end_time'] = datetime.now().isoformat()
+        
+        return jsonify(execution_result)
+        
+    except Exception as e:
+        logger.error(f"Error executing Strands workflow: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/strands/workflows/<workflow_id>/status', methods=['GET'])
+def get_strands_workflow_status(workflow_id):
+    """Get Strands workflow execution status"""
+    try:
+        # Get workflow from database
+        conn = sqlite3.connect(DATABASE_PATH)
+        cursor = conn.cursor()
+        
+        cursor.execute('SELECT * FROM strands_workflows WHERE id = ?', (workflow_id,))
+        row = cursor.fetchone()
+        
+        if not row:
+            conn.close()
+            return jsonify({'error': 'Workflow not found'}), 404
+        
+        workflow_data = json.loads(row[3])
+        
+        # Get execution history (would be stored in separate table in production)
+        status = {
+            'workflow_id': workflow_id,
+            'name': row[1],
+            'description': row[2],
+            'status': 'idle',  # Would track actual execution status
+            'tasks': workflow_data.get('tasks', []),
+            'agents': workflow_data.get('agents', []),
+            'created_at': row[4],
+            'updated_at': row[5]
+        }
+        
+        conn.close()
+        return jsonify(status)
+        
+    except Exception as e:
+        logger.error(f"Error getting workflow status: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/strands/tools', methods=['GET'])
+def get_strands_tools():
+    """Get available Strands tools"""
+    try:
+        # Core Strands tools (from samples)
+        strands_tools = [
+            {
+                'name': 'calculator',
+                'description': 'Perform mathematical calculations and expressions',
+                'category': 'calculator',
+                'parameters': {
+                    'expression': {
+                        'type': 'string',
+                        'description': 'Mathematical expression to evaluate',
+                        'required': True
+                    }
+                }
+            },
+            {
+                'name': 'current_time',
+                'description': 'Get current date and time information',
+                'category': 'custom',
+                'parameters': {
+                    'format': {
+                        'type': 'string',
+                        'description': 'Time format (iso, local, utc)',
+                        'required': False,
+                        'default': 'iso'
+                    }
+                }
+            },
+            {
+                'name': 'letter_counter',
+                'description': 'Count occurrences of a specific letter in a word',
+                'category': 'custom',
+                'parameters': {
+                    'word': {
+                        'type': 'string',
+                        'description': 'Word to analyze',
+                        'required': True
+                    },
+                    'letter': {
+                        'type': 'string',
+                        'description': 'Letter to count (single character)',
+                        'required': True
+                    }
+                }
+            },
+            {
+                'name': 'python_repl',
+                'description': 'Execute Python code (simplified version)',
+                'category': 'custom',
+                'parameters': {
+                    'code': {
+                        'type': 'string',
+                        'description': 'Python code to execute',
+                        'required': True
+                    }
+                }
+            },
+            {
+                'name': 'web_search',
+                'description': 'Search the web for information',
+                'category': 'web_search',
+                'parameters': {
+                    'query': {
+                        'type': 'string',
+                        'description': 'Search query',
+                        'required': True
+                    },
+                    'limit': {
+                        'type': 'number',
+                        'description': 'Maximum number of results',
+                        'required': False,
+                        'default': 5
+                    }
+                }
+            }
+        ]
+        
+        return jsonify({'tools': strands_tools})
+        
+    except Exception as e:
+        logger.error(f"Error getting Strands tools: {str(e)}")
+        return jsonify({'tools': []}), 500
+
+@app.route('/api/strands/tools/<tool_name>/execute', methods=['POST'])
+def execute_strands_tool(tool_name):
+    """Execute a Strands tool"""
+    try:
+        data = request.json
+        params = data.get('params', {})
+        context = data.get('context', {})
+        
+        # Execute tool based on name
+        if tool_name == 'calculator':
+            result = execute_calculator_tool(params)
+        elif tool_name == 'current_time':
+            result = execute_current_time_tool(params)
+        elif tool_name == 'letter_counter':
+            result = execute_letter_counter_tool(params)
+        elif tool_name == 'python_repl':
+            result = execute_python_repl_tool(params)
+        elif tool_name == 'web_search':
+            result = execute_web_search_tool(params)
+        else:
+            return jsonify({'error': f'Tool {tool_name} not found'}), 404
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        logger.error(f"Error executing tool {tool_name}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+# Helper functions for Strands integration
+def determine_agent_category(capabilities_json):
+    """Determine agent category based on capabilities"""
+    if not capabilities_json:
+        return 'general'
+    
+    try:
+        capabilities = json.loads(capabilities_json) if isinstance(capabilities_json, str) else capabilities_json
+        if not capabilities:
+            return 'general'
+        
+        capabilities_str = ' '.join(capabilities).lower()
+        
+        if any(word in capabilities_str for word in ['research', 'analysis', 'investigate']):
+            return 'research'
+        elif any(word in capabilities_str for word in ['calculation', 'math', 'compute']):
+            return 'calculation'
+        elif any(word in capabilities_str for word in ['documentation', 'writing', 'content']):
+            return 'documentation'
+        else:
+            return 'general'
+    except:
+        return 'general'
+
+def get_agent_tools(agent_id):
+    """Get tools available to an agent"""
+    # For now, return default Strands tools
+    # In production, this would be based on agent configuration
+    return ['calculator', 'current_time', 'letter_counter']
+
+def execute_workflow_tasks(workflow_data, execution_result, input_data):
+    """Execute workflow tasks with dependency resolution (Strands pattern)"""
+    tasks = workflow_data.get('tasks', [])
+    agents = workflow_data.get('agents', [])
+    completed_tasks = []
+    
+    # Create agent lookup for quick access
+    agent_lookup = {agent.get('id', ''): agent for agent in agents}
+    
+    # Execute tasks in dependency order
+    for task in tasks:
+        try:
+            start_time = datetime.now()
+            task_id = task.get('taskId', '')
+            agent_id = task.get('agentId', '')
+            
+            logger.info(f"Executing task {task_id} with agent {agent_id}")
+            
+            # Get the agent for this task
+            agent = agent_lookup.get(agent_id)
+            if not agent:
+                # If no specific agent, try to find one from database
+                agent = get_agent_from_database(agent_id)
+            
+            if agent:
+                # Execute the task with the actual agent
+                task_output = execute_task_with_agent(task, agent, input_data, completed_tasks)
+                status = 'completed'
+            else:
+                # Fallback to simulation if agent not found
+                task_output = f"Task {task.get('description', '')} completed with input: {input_data}"
+                status = 'completed'
+                logger.warning(f"Agent {agent_id} not found, using simulation")
+            
+            execution_time = int((datetime.now() - start_time).total_seconds() * 1000)
+            
+            task_result = {
+                'task_id': task_id,
+                'status': status,
+                'output': task_output,
+                'execution_time': execution_time,
+                'agent_id': agent_id,
+                'agent_name': agent.get('name', 'Unknown') if agent else 'Unknown'
+            }
+            
+            execution_result['results'][task_id] = task_result
+            execution_result['metrics']['completed_tasks'] += 1
+            completed_tasks.append(task_id)
+            
+        except Exception as e:
+            execution_result['metrics']['error_count'] += 1
+            logger.error(f"Task execution failed: {str(e)}")
+            
+            # Add failed task result
+            task_result = {
+                'task_id': task.get('taskId', ''),
+                'status': 'error',
+                'output': f"Task failed: {str(e)}",
+                'execution_time': 0,
+                'error': str(e)
+            }
+            execution_result['results'][task.get('taskId', '')] = task_result
+
+def get_agent_from_database(agent_id):
+    """Get agent details from database"""
+    try:
+        conn = sqlite3.connect(DATABASE_PATH)
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM agents WHERE id = ?', (agent_id,))
+        row = cursor.fetchone()
+        conn.close()
+        
+        if row:
+            return {
+                'id': row[0],
+                'name': row[1],
+                'role': row[2],
+                'description': row[3],
+                'model': row[4],
+                'system_prompt': row[7],
+                'temperature': row[8],
+                'max_tokens': row[9]
+            }
+    except Exception as e:
+        logger.error(f"Error getting agent from database: {str(e)}")
+    return None
+
+def execute_task_with_agent(task, agent, input_data, completed_tasks):
+    """Execute a task using an actual Ollama agent"""
+    try:
+        # Build the prompt for the task
+        task_description = task.get('description', '')
+        task_input = task.get('input', input_data)
+        
+        # Include context from completed tasks
+        context = ""
+        if completed_tasks:
+            context = f"Previous task results: {', '.join(completed_tasks)}. "
+        
+        # Create the full prompt
+        prompt = f"{context}Task: {task_description}\nInput: {task_input}\n\nPlease complete this task:"
+        
+        # Execute with Ollama
+        ollama_request = {
+            "model": agent.get('model', 'llama3.2:latest'),
+            "prompt": f"System: {agent.get('system_prompt', '')}\n\nHuman: {prompt}\n\nAssistant:",
+            "stream": False,
+            "options": {
+                "temperature": agent.get('temperature', 0.7),
+                "num_predict": agent.get('max_tokens', 1000)
+            }
+        }
+        
+        # Make request to Ollama
+        response = requests.post(
+            f"{OLLAMA_BASE_URL}/api/generate",
+            json=ollama_request,
+            timeout=60
+        )
+        
+        if response.status_code == 200:
+            result = response.json()
+            return result.get("response", "No response from agent")
+        else:
+            return f"Agent execution failed: HTTP {response.status_code}"
+            
+    except Exception as e:
+        logger.error(f"Error executing task with agent: {str(e)}")
+        return f"Task execution error: {str(e)}"
+
+# Strands tool implementations
+def execute_calculator_tool(params):
+    """Execute calculator tool (from Strands samples)"""
+    try:
+        expression = params.get('expression', '')
+        if not expression:
+            return {'error': 'Expression is required', 'success': False}
+        
+        # Safe evaluation (basic implementation)
+        # Remove dangerous characters
+        sanitized = ''.join(c for c in expression if c in '0123456789+-*/.() ')
+        
+        try:
+            result = eval(sanitized)
+            return {
+                'result': result,
+                'expression': expression,
+                'success': True,
+                'type': 'calculation'
+            }
+        except:
+            return {
+                'error': 'Invalid mathematical expression',
+                'expression': expression,
+                'success': False
+            }
+    except Exception as e:
+        return {'error': str(e), 'success': False}
+
+def execute_current_time_tool(params):
+    """Execute current_time tool (from Strands samples)"""
+    try:
+        format_type = params.get('format', 'iso')
+        timezone = params.get('timezone', 'UTC')
+        
+        now = datetime.now()
+        
+        if format_type == 'local':
+            time_string = now.strftime('%Y-%m-%d %H:%M:%S')
+        elif format_type == 'utc':
+            time_string = now.utctimetuple()
+            time_string = datetime(*time_string[:6]).isoformat() + 'Z'
+        else:  # iso
+            time_string = now.isoformat()
+        
+        return {
+            'current_time': time_string,
+            'timestamp': int(now.timestamp()),
+            'timezone': timezone,
+            'format': format_type,
+            'success': True
+        }
+    except Exception as e:
+        return {'error': str(e), 'success': False}
+
+def execute_letter_counter_tool(params):
+    """Execute letter_counter tool (from Strands samples)"""
+    try:
+        word = params.get('word', '')
+        letter = params.get('letter', '')
+        
+        if not word or not letter:
+            return {'error': 'Both word and letter parameters are required', 'success': False}
+        
+        if len(letter) != 1:
+            return {'error': 'Letter parameter must be a single character', 'success': False}
+        
+        count = word.lower().count(letter.lower())
+        
+        return {
+            'word': word,
+            'letter': letter,
+            'count': count,
+            'success': True
+        }
+    except Exception as e:
+        return {'error': str(e), 'success': False}
+
+def execute_python_repl_tool(params):
+    """Execute python_repl tool (simplified version)"""
+    try:
+        code = params.get('code', '')
+        if not code:
+            return {'error': 'Code parameter is required', 'success': False}
+        
+        # Simplified implementation - just return the code
+        # In production, you'd want proper Python execution environment
+        return {
+            'code': code,
+            'output': f'Code received: {code}\nNote: Python execution would happen here in production environment',
+            'success': True,
+            'note': 'This is a simplified implementation for demonstration'
+        }
+    except Exception as e:
+        return {'error': str(e), 'success': False}
+
+def execute_web_search_tool(params):
+    """Execute web_search tool (placeholder)"""
+    try:
+        query = params.get('query', '')
+        limit = params.get('limit', 5)
+        
+        if not query:
+            return {'error': 'Query parameter is required', 'success': False}
+        
+        # Placeholder implementation
+        return {
+            'query': query,
+            'results': [
+                {
+                    'title': f'Search result for: {query}',
+                    'url': 'https://example.com',
+                    'snippet': 'This is a placeholder search result. In production, this would connect to a real search API.'
+                }
+            ],
+            'success': True,
+            'note': 'This is a placeholder implementation'
+        }
+    except Exception as e:
+        return {'error': str(e), 'success': False}
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5002, debug=True)

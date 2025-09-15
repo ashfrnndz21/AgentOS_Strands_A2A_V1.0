@@ -145,8 +145,29 @@ if [ $? -eq 0 ]; then
     test_service "http://localhost:5003/health" "RAG API"
 fi
 
+# Start Strands API (Intelligence & Reasoning)
+echo -e "${BLUE}3. Starting Strands API (Intelligence & Reasoning)...${NC}"
+if ! check_port 5004; then
+    echo -e "${RED}   Port 5004 is still in use!${NC}"
+    exit 1
+fi
+
+echo "   Starting Strands API on port 5004..."
+cd backend
+source venv/bin/activate
+python strands_api.py >/dev/null 2>&1 &
+STRANDS_API_PID=$!
+cd ..
+
+wait_for_service 5004 "Strands API"
+if [ $? -eq 0 ]; then
+    # Test the service
+    sleep 3
+    test_service "http://localhost:5004/api/strands/health" "Strands API"
+fi
+
 # Start Ollama API (Terminal & Agents)
-echo -e "${BLUE}3. Starting Ollama API (Terminal & Agents)...${NC}"
+echo -e "${BLUE}4. Starting Ollama API (Terminal & Agents)...${NC}"
 if ! check_port 5002; then
     echo -e "${RED}   Port 5002 is still in use!${NC}"
     exit 1
@@ -167,7 +188,7 @@ if [ $? -eq 0 ]; then
 fi
 
 # Start Frontend (Vite)
-echo -e "${BLUE}4. Starting Frontend (Vite)...${NC}"
+echo -e "${BLUE}5. Starting Frontend (Vite)...${NC}"
 if ! check_port 5173; then
     echo -e "${RED}   Port 5173 is still in use!${NC}"
     exit 1
@@ -193,6 +214,7 @@ services=(
     "11434:Ollama Core"
     "5002:Ollama API"
     "5003:RAG API"
+    "5004:Strands API"
     "5173:Frontend"
 )
 
@@ -215,10 +237,11 @@ if [ "$all_running" = true ]; then
     echo -e "${GREEN}🎉 All services started successfully!${NC}"
     echo ""
     echo "📡 Service URLs:"
-    echo "   • Frontend: http://localhost:5173"
-    echo "   • Ollama Core: http://localhost:11434"
-    echo "   • Ollama API: http://localhost:5002"
-    echo "   • RAG API: http://localhost:5003"
+    echo "   • Frontend:     http://localhost:5173"
+    echo "   • Strands API:  http://localhost:5004"
+    echo "   • RAG API:      http://localhost:5003"
+    echo "   • Ollama API:   http://localhost:5002"
+    echo "   • Ollama Core:  http://localhost:11434"
     echo ""
     echo "🌐 Application is ready!"
     echo "   • Open your browser: http://localhost:5173"

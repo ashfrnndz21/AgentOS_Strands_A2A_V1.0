@@ -378,7 +378,7 @@ export const TelcoCvmWorkspace = () => {
         ...prev,
         complianceScore: Math.floor(Math.random() * 10) + 90,
         performanceScore: Math.floor(Math.random() * 15) + 85,
-        revenueImpact: `$${(Math.random() * 2 + 2).toFixed(1)}M`,
+        revenueImpact: `${(Math.random() * 2 + 2).toFixed(1)}M`,
       }));
       
       setEdges(edges => edges.map(edge => ({
