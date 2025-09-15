@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Plus, Bot, TrendingUp, Users, Workflow, ArrowRight, Star, Radio, Sparkles, Factory, Truck, DollarSign, UserCheck, FlaskConical, Shield } from 'lucide-react';
+import { useIndustry } from '@/contexts/IndustryContext';
 
 interface ProjectSelectorProps {
   onSelectProject: (projectType: string) => void;
@@ -10,6 +11,7 @@ interface ProjectSelectorProps {
 
 export const MultiAgentProjectSelector: React.FC<ProjectSelectorProps> = ({ onSelectProject }) => {
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
+  const { currentIndustry } = useIndustry();
 
   // Cross-industry template (visible to all)
   const crossIndustryProjects = [
@@ -185,10 +187,17 @@ export const MultiAgentProjectSelector: React.FC<ProjectSelectorProps> = ({ onSe
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-red-400 bg-clip-text text-transparent">
-            Air Liquide Agent OS
+            {currentIndustry.displayName}
           </h1>
           <p className="text-slate-300 text-lg">
-            Choose an industrial gas workflow template or create a new multi-agent solution
+            {currentIndustry.id === 'industrial' 
+              ? 'Choose an industrial gas workflow template or create a new multi-agent solution'
+              : currentIndustry.id === 'banking'
+              ? 'Choose a banking workflow template or create a new financial multi-agent solution'
+              : currentIndustry.id === 'telco'
+              ? 'Choose a telecommunications workflow template or create a new network multi-agent solution'
+              : `Choose a ${currentIndustry.name} workflow template or create a new multi-agent solution`
+            }
           </p>
         </div>
 
@@ -206,8 +215,20 @@ export const MultiAgentProjectSelector: React.FC<ProjectSelectorProps> = ({ onSe
                   <Plus className="h-8 w-8 text-cyan-400" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold text-white mb-1">Create New Industrial Workflow</h3>
-                  <p className="text-slate-400">Start with a blank canvas and build your custom industrial gas solution</p>
+                  <h3 className="text-xl font-semibold text-white mb-1">
+                    Create New {currentIndustry.id === 'industrial' ? 'Industrial' : 
+                               currentIndustry.id === 'banking' ? 'Banking' : 
+                               currentIndustry.id === 'telco' ? 'Telco' : 
+                               currentIndustry.name.charAt(0).toUpperCase() + currentIndustry.name.slice(1)} Workflow
+                  </h3>
+                  <p className="text-slate-400">
+                    Start with a blank canvas and build your custom {
+                      currentIndustry.id === 'industrial' ? 'industrial gas solution' :
+                      currentIndustry.id === 'banking' ? 'financial services solution' :
+                      currentIndustry.id === 'telco' ? 'telecommunications solution' :
+                      `${currentIndustry.name} solution`
+                    }
+                  </p>
                 </div>
               </div>
               <Button 
@@ -445,13 +466,21 @@ export const MultiAgentProjectSelector: React.FC<ProjectSelectorProps> = ({ onSe
             </div>
           </div>
 
-          {/* Air Liquide Industrial Solutions */}
+          {/* Industry-Specific Solutions */}
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-4">
               <Factory className="h-6 w-6 text-blue-400" />
-              <h3 className="text-lg font-medium text-slate-300">Industrial Gas Solutions</h3>
+              <h3 className="text-lg font-medium text-slate-300">
+                {currentIndustry.id === 'industrial' ? 'Industrial Gas Solutions' :
+                 currentIndustry.id === 'banking' ? 'Financial Services Solutions' :
+                 currentIndustry.id === 'telco' ? 'Telecommunications Solutions' :
+                 `${currentIndustry.name.charAt(0).toUpperCase() + currentIndustry.name.slice(1)} Solutions`}
+              </h3>
               <Badge className="bg-blue-900/20 text-blue-300 border-blue-700/30">
-                🧪 Air Liquide
+                {currentIndustry.id === 'industrial' ? '🧪 Air Liquide' :
+                 currentIndustry.id === 'banking' ? '🏦 Banking' :
+                 currentIndustry.id === 'telco' ? '📡 Telco' :
+                 `🏢 ${currentIndustry.displayName}`}
               </Badge>
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
