@@ -255,6 +255,22 @@ Robust service termination:
 3. **Use restart for updates** - `./manage-app.sh restart`
 4. **Monitor logs for issues** - `./manage-app.sh logs`
 
+## 🆕 Recent Updates
+
+### **Latest Features (September 2024)**
+- ✅ **Fixed Command Centre Tabs**: Resolved white screen and unclickable tab issues
+- ✅ **Industry-Specific Content**: Banking vs Industrial themed content throughout the platform
+- ✅ **Agent Delete Functionality**: Complete delete workflow with confirmation dialogs
+- ✅ **Navigation Cleanup**: Removed deprecated "AI Agents" menu items
+- ✅ **Enhanced Strands Workspace**: Improved multi-agent workflow capabilities
+- ✅ **Backend API Improvements**: New delete endpoints and service management
+
+### **Bug Fixes**
+- 🐛 Fixed Strands tab clicking and navigation issues
+- 🐛 Resolved Command Centre white screen problems
+- 🐛 Improved industry context switching
+- 🐛 Enhanced service startup reliability
+
 ## 🔧 Development Workflow
 
 ### **Daily Development**
@@ -280,30 +296,137 @@ Robust service termination:
 3. Use the automation scripts for testing
 4. Submit a pull request
 
-## 📚 Technical Architecture & Design
+## 🏗️ AgentOS Architecture Blueprint
 
-### **System Overview**
-AgentOS Studio is a comprehensive AI agent platform built with a microservices architecture, featuring a React frontend and multiple Python backend services for AI model management, document processing, and agent orchestration.
+### **Complete AgentOS platform architecture and logical flow visualization**
 
 ```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Frontend      │    │   Ollama API    │    │   RAG API       │
-│   (React/Vite)  │◄──►│   (Flask)       │    │   (FastAPI)     │
-│   Port 5173     │    │   Port 5002     │    │   Port 5003     │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-         │                       │                       │
-         │                       ▼                       ▼
-         │              ┌─────────────────┐    ┌─────────────────┐
-         │              │   SQLite DB     │    │   ChromaDB      │
-         │              │   (Agents)      │    │   (Vectors)     │
-         │              └─────────────────┘    └─────────────────┘
-         │
-         ▼
-┌─────────────────┐
-│   Ollama Core   │
-│   (AI Models)   │
-│   Port 11434    │
-└─────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                           🌐 AgentOS Cloud Infrastructure                            │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                              🎯 AgentOS User Interface Layer                         │
+├─────────────────────┬─────────────────────┬─────────────────────┬─────────────────────┤
+│  🔐 Authentication  │  📊 Dashboard Hub   │  🎨 Industry Engine │  🔧 Settings        │
+│                     │                     │                     │                     │
+│ • Auth.tsx          │ • MainContent.tsx   │ • IndustryContext   │ • BackendControl    │
+│ • ErrorBoundary     │ • IndustrySidebar   │ • IndustryBanner    │ • ApiSettings       │
+│ • Layout.tsx        │ • Sidebar.tsx       │ • IndustrySwitcher  │ • ModelSettings     │
+└─────────────────────┴─────────────────────┴─────────────────────┴─────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                            🎛️ AgentOS Command Centre                                │
+├─────────────────────┬─────────────────────┬─────────────────────┬─────────────────────┤
+│  📈 Analytics       │  🔍 Data Access     │  ⚖️ Governance      │  📋 Project Mgmt    │
+│                     │                     │                     │                     │
+│ • FixedMainTabs     │ • DataAccessContent │ • GovernanceContent │ • ProjectData       │
+│ • AgentTraceability │ • DocumentChat      │ • GuardrailsPanel   │ • ProjectSelector   │
+│ • PerformanceMetrics│ • DocumentLibrary   │ • LocalGuardrails   │ • ProjectTiles      │
+│ • StrandsTraceability│ • DocumentUploader │ • GlobalGuardrails  │ • QuickActions      │
+└─────────────────────┴─────────────────────┴─────────────────────┴─────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                         🤖 Multi-Agent Workspace Ecosystem                          │
+├─────────────────────┬─────────────────────┬─────────────────────┬─────────────────────┤
+│  🧠 Strands System  │  🏭 Industrial      │  🏦 Banking         │  📱 Telco CVM       │
+│                     │                     │                     │                     │
+│ • StrandsWorkspace  │ • ForecastingWS     │ • BankingAgentPal   │ • TelcoCvmWS        │
+│ • StrandsCanvas     │ • ProcurementWS     │ • WealthMgmtWS      │ • NetworkTwinWS     │
+│ • StrandsAgentPal   │ • SafetyWorkspace   │ • ComplianceMonitor │ • CvmAgentPalette   │
+│ • WorkflowExecution │ • RDWorkspace       │ • RiskAssessment    │ • NetworkAgents     │
+└─────────────────────┴─────────────────────┴─────────────────────┴─────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                              🔧 Core Service Layer                                  │
+├─────────────────────┬─────────────────────┬─────────────────────┬─────────────────────┤
+│  🦙 Ollama API      │  📚 RAG Service     │  🔗 Strands API     │  💬 Chat Orchestr. │
+│  Port: 5002         │  Port: 5003         │  Port: 5004         │  Port: 5005         │
+│                     │                     │                     │                     │
+│ • ollama_api.py     │ • rag_api.py        │ • strands_api.py    │ • chat_orchestr.py  │
+│ • Model Management  │ • Document Ingest   │ • Workflow Exec     │ • Multi-Agent Chat  │
+│ • Agent CRUD        │ • Vector Storage    │ • Node Management   │ • Context Switching │
+│ • Terminal Interface│ • Semantic Search   │ • Tool Integration  │ • Session Handling  │
+└─────────────────────┴─────────────────────┴─────────────────────┴─────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                               💾 Data Storage Layer                                 │
+├─────────────────────┬─────────────────────┬─────────────────────┬─────────────────────┤
+│  🗃️ Agent Database  │  🔍 Vector Store    │  📊 Strands DB      │  💬 Chat DB         │
+│  (SQLite)           │  (ChromaDB)         │  (SQLite)           │  (SQLite)           │
+│                     │                     │                     │                     │
+│ • ollama_agents.db  │ • rag_documents.db  │ • strands_agents.db │ • chat_orchestr.db  │
+│ • Agent Configs     │ • Document Vectors  │ • Workflow States   │ • Chat Sessions     │
+│ • Conversations     │ • Embeddings        │ • Execution Logs    │ • Message History   │
+│ • Execution Logs    │ • Metadata Index    │ • Tool Configs      │ • Context Data      │
+└─────────────────────┴─────────────────────┴─────────────────────┴─────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                              🧠 AI Processing Engine                                │
+├─────────────────────┬─────────────────────┬─────────────────────┬─────────────────────┤
+│  🦙 Ollama Core     │  🛠️ Native Tools    │  🔒 Safety Layer    │  📈 Model Registry  │
+│  Port: 11434        │                     │                     │                     │
+│                     │                     │                     │                     │
+│ • Model Inference   │ • Calculator        │ • Content Filter    │ • ollamaModels.ts  │
+│ • GPU Acceleration  │ • Time Utils        │ • Guardrails        │ • modelValidator    │
+│ • Memory Management │ • Letter Counter    │ • Rate Limiting     │ • Performance Bench │
+│ • Load Balancing    │ • Python REPL       │ • Input Validation  │ • Auto-Updates      │
+└─────────────────────┴─────────────────────┴─────────────────────┴─────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                            🎨 Component Architecture                                 │
+├─────────────────────┬─────────────────────┬─────────────────────┬─────────────────────┤
+│  🔧 Node System     │  🔗 Edge System     │  🎛️ Config System   │  🖥️ Interface Sys  │
+│                     │                     │                     │                     │
+│ • StrandsAgentNode  │ • StrandsEdge       │ • NodeConfigDialog  │ • SimpleChatInterface│
+│ • StrandsTaskNode   │ • WorkflowEdge      │ • AgentConfigDialog │ • FlexibleChatInt   │
+│ • StrandsDecisionNode│ • AnimatedEdge     │ • TaskConfigDialog  │ • ExecutionResults  │
+│ • StrandsParallelNode│ • ConnectionEdge   │ • ToolConfigDialog  │ • PropertiesPanel   │
+└─────────────────────┴─────────────────────┴─────────────────────┴─────────────────────┘
+```
+
+### **🔄 AgentOS Logical Flow**
+
+#### **1. Application Startup & Industry Context**
+```
+App Launch → Industry Selection → Context Loading → Theme Application → Dashboard Init
+     ↓              ↓                ↓                ↓                    ↓
+ Layout.tsx → IndustryContext → IndustryConfig → IndustryBanner → MainContent.tsx
+```
+
+#### **2. Command Centre Workflow**
+```
+Command Centre → Tab Navigation → Content Loading → Industry Adaptation → API Calls
+       ↓              ↓              ↓                ↓                   ↓
+FixedMainTabs → Tab Selection → Content Components → Industry Context → Backend APIs
+```
+
+#### **3. Strands Multi-Agent Workflow**
+```
+Workspace Access → Agent Palette → Canvas Design → Node Configuration → Execution
+       ↓               ↓             ↓              ↓                   ↓
+StrandsWorkspace → StrandsAgentPal → StrandsCanvas → NodeConfigDialog → WorkflowExec
+```
+
+#### **4. Document Intelligence Pipeline**
+```
+Document Upload → File Processing → Text Chunking → Vector Generation → Storage → Query
+       ↓               ↓              ↓              ↓                  ↓        ↓
+DocumentUploader → rag_api.py → Text Processing → Embedding Gen → ChromaDB → RAG Query
+```
+
+#### **5. Agent Lifecycle Management**
+```
+Agent Creation → Configuration → Deployment → Execution → Monitoring → Management
+       ↓              ↓            ↓           ↓           ↓            ↓
+AgentConfigDialog → Parameter Setup → Agent Deploy → Ollama API → Performance → Agent CRUD
+```
+
+#### **6. Real-time Chat & Orchestration**
+```
+Chat Interface → Message Processing → Agent Selection → Response Generation → Display
+       ↓               ↓                ↓               ↓                   ↓
+SimpleChatInterface → chat_orchestr.py → Agent Router → Ollama Core → Message Display
 ```
 
 ### **Component Architecture**
@@ -467,134 +590,152 @@ CREATE TABLE document_chunks (
 );
 ```
 
-## 🔄 User Interaction Workflows
+## 🔄 AgentOS User Workflows
 
-### **Workflow 1: Document Chat Experience**
+### **📋 Workflow Overview**
+*Complete user interaction patterns and system responses*
 
-```mermaid
-graph TD
-    A[User opens Document Chat] --> B[Upload Document]
-    B --> C[Frontend: File validation]
-    C --> D[POST /api/rag/ingest]
-    D --> E[RAG API: Process document]
-    E --> F[Text extraction & chunking]
-    F --> G[Generate embeddings]
-    G --> H[Store in ChromaDB]
-    H --> I[Update document status]
-    I --> J[User sees "Ready to chat"]
-    J --> K[User asks question]
-    K --> L[POST /api/rag/query]
-    L --> M[Semantic search in vectors]
-    M --> N[Retrieve relevant chunks]
-    N --> O[Generate context prompt]
-    O --> P[Call Ollama for response]
-    P --> Q[Return AI answer with sources]
-    Q --> R[Display in chat interface]
+#### **🎯 Overview** | **📊 Detailed** | **▶️ Start Flow**
+
+---
+
+### **📚 Document Intelligence Workflow**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                            📄 Document Processing Pipeline                           │
+├─────────────────────┬─────────────────────┬─────────────────────┬─────────────────────┤
+│  📤 Upload Phase    │  🔄 Processing      │  💬 Chat Phase      │  🗂️ Management     │
+│                     │                     │                     │                     │
+│ • Drag & Drop       │ • Text Extraction   │ • Question Input    │ • View Documents    │
+│ • File Validation   │ • Smart Chunking    │ • Semantic Search   │ • Delete Files      │
+│ • Format Check      │ • Embedding Gen     │ • AI Response       │ • Clear All         │
+│ • Size Limits       │ • Vector Storage    │ • Source Citations  │ • Export Data       │
+└─────────────────────┴─────────────────────┴─────────────────────┴─────────────────────┘
+
+📊 Flow: Upload → Validate → Process → Store → Query → Respond → Manage
 ```
 
 **User Journey:**
-1. **Upload Phase**: User drags/drops document → File validation → Processing indicator
-2. **Processing Phase**: Document chunking → Embedding generation → Vector storage
-3. **Chat Phase**: Question input → Semantic search → AI response with citations
-4. **Management Phase**: View documents → Delete documents → Clear all
+- **Upload**: Drag/drop document → Validation → Processing indicator
+- **Processing**: Chunking → Embeddings → Vector storage → Ready status
+- **Chat**: Question → Semantic search → AI response with sources
+- **Management**: Browse → Delete → Export → Clear workspace
 
-### **Workflow 2: Ollama Terminal Experience**
+### **🖥️ Ollama Terminal Workflow**
 
-```mermaid
-graph TD
-    A[User opens Ollama Terminal] --> B[Connection test]
-    B --> C[Display available models]
-    C --> D[User types command]
-    D --> E[Command validation]
-    E --> F[POST /api/ollama/terminal]
-    F --> G[Parse command type]
-    G --> H{Command Type}
-    H -->|list| I[GET /api/tags from Ollama]
-    H -->|pull| J[POST /api/pull to Ollama]
-    H -->|run| K[POST /api/generate to Ollama]
-    H -->|show| L[POST /api/show to Ollama]
-    I --> M[Format model list]
-    J --> N[Show pull progress]
-    K --> O[Stream AI response]
-    L --> P[Display model info]
-    M --> Q[Display in terminal]
-    N --> Q
-    O --> Q
-    P --> Q
-    Q --> R[Ready for next command]
+```
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                             🦙 AI Model Terminal Interface                           │
+├─────────────────────┬─────────────────────┬─────────────────────┬─────────────────────┤
+│  🔌 Connection      │  ⌨️ Command Exec    │  📦 Model Mgmt      │  🤖 AI Interaction │
+│                     │                     │                     │                     │
+│ • Auto-Connect      │ • Command Parse     │ • List Models       │ • Run Prompts       │
+│ • Service Test      │ • Syntax Check      │ • Pull New Models   │ • Stream Response   │
+│ • Status Display    │ • Execute & Log     │ • Model Details     │ • Chat History      │
+│ • Health Monitor    │ • Error Handling    │ • Version Control   │ • Context Memory    │
+└─────────────────────┴─────────────────────┴─────────────────────┴─────────────────────┘
+
+📊 Flow: Connect → Command → Validate → Execute → Stream → Display → Continue
 ```
 
 **User Journey:**
-1. **Connection Phase**: Auto-connect to backend → Test Ollama service → Show status
-2. **Command Phase**: Type command → Syntax validation → Execute → Show results
-3. **Model Management**: List models → Pull new models → Show model details
-4. **AI Interaction**: Run model with prompt → Stream response → Continue conversation
+- **Connection**: Auto-connect → Service test → Status display
+- **Commands**: Type → Validate → Execute → Results display
+- **Models**: List → Pull → Configure → Monitor performance
+- **AI Chat**: Prompt → Stream response → Context retention
 
-### **Workflow 3: Agent Management Experience**
+### **🤖 Agent Management Workflow**
 
-```mermaid
-graph TD
-    A[User opens Agent Dashboard] --> B[Load existing agents]
-    B --> C[Display agent cards]
-    C --> D{User Action}
-    D -->|Create Agent| E[Open agent form]
-    D -->|Execute Agent| F[Open execution dialog]
-    D -->|View Metrics| G[Load performance data]
-    D -->|Delete Agent| H[Confirm deletion]
-    
-    E --> I[Fill agent details]
-    I --> J[POST /api/agents/ollama]
-    J --> K[Store in database]
-    K --> L[Refresh agent list]
-    
-    F --> M[Enter prompt]
-    M --> N[POST /api/agents/ollama/ID/execute]
-    N --> O[Load agent config]
-    O --> P[Generate AI response]
-    P --> Q[Store execution record]
-    Q --> R[Display result]
-    
-    G --> S[GET /api/agents/ollama/ID/metrics]
-    S --> T[Display charts & stats]
-    
-    H --> U[DELETE /api/agents/ollama/ID]
-    U --> V[Remove from database]
-    V --> L
+```
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                              🎯 Intelligent Agent Lifecycle                         │
+├─────────────────────┬─────────────────────┬─────────────────────┬─────────────────────┤
+│  🔍 Discovery       │  ⚙️ Creation        │  ▶️ Execution       │  📊 Management      │
+│                     │                     │                     │                     │
+│ • Agent Gallery     │ • Role Definition   │ • Prompt Input      │ • Performance       │
+│ • Category Browse   │ • Parameter Setup   │ • Response Review   │ • Configuration     │
+│ • Performance Check │ • Guardrail Config  │ • Result Storage    │ • Delete Confirm    │
+│ • Template Library  │ • Model Selection   │ • Context Tracking  │ • Archive System    │
+└─────────────────────┴─────────────────────┴─────────────────────┴─────────────────────┘
+
+📊 Flow: Discover → Create → Configure → Execute → Monitor → Manage → Archive
 ```
 
 **User Journey:**
-1. **Discovery Phase**: View agent gallery → Browse by category → Check performance
-2. **Creation Phase**: Define agent role → Set parameters → Configure guardrails
-3. **Execution Phase**: Select agent → Input prompt → Review response → Save results
-4. **Management Phase**: Monitor performance → Update configurations → Archive agents
+- **Discovery**: Gallery browse → Category filter → Performance review
+- **Creation**: Role define → Parameters → Guardrails → Model select
+- **Execution**: Agent select → Prompt → Response → Save results
+- **Management**: Monitor → Update → Delete confirmation → Archive
 
-### **Workflow 4: System Monitoring & Control**
+### **🔧 System Monitoring & Control Workflow**
 
-```mermaid
-graph TD
-    A[Backend Control Panel] --> B[Service status checks]
-    B --> C{All Services Running?}
-    C -->|Yes| D[Show green status]
-    C -->|No| E[Show error indicators]
-    E --> F[Refresh Status button]
-    F --> G[Re-check all services]
-    G --> H[Update status display]
-    
-    D --> I[Show service metrics]
-    I --> J[Model count]
-    I --> K[Document count]
-    I --> L[Agent count]
-    
-    B --> M[Health endpoint calls]
-    M --> N[GET /health on each service]
-    N --> O[Parse response times]
-    O --> P[Display latency metrics]
+```
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                            📊 Real-time System Observatory                          │
+├─────────────────────┬─────────────────────┬─────────────────────┬─────────────────────┤
+│  💚 Status Monitor  │  🔍 Troubleshooting │  📈 Performance     │  ⚡ Quick Actions   │
+│                     │                     │                     │                     │
+│ • Health Indicators │ • Error Detection   │ • Response Times    │ • Service Restart   │
+│ • Auto-Refresh      │ • Failure Analysis  │ • Resource Usage    │ • Cache Clear       │
+│ • Service Metrics   │ • Recovery Guide    │ • Capacity Metrics  │ • Log Access        │
+│ • Uptime Tracking   │ • Alert System      │ • Trend Analysis    │ • Config Update     │
+└─────────────────────┴─────────────────────┴─────────────────────┴─────────────────────┘
+
+📊 Flow: Monitor → Detect → Analyze → Alert → Troubleshoot → Recover → Optimize
 ```
 
 **User Journey:**
-1. **Status Monitoring**: Auto-refresh service status → Show health indicators → Display metrics
-2. **Troubleshooting**: Identify failed services → Show error messages → Provide restart guidance
-3. **Performance Tracking**: Monitor response times → Track resource usage → Show capacity metrics
+- **Monitoring**: Auto-refresh → Health check → Metrics display
+- **Issues**: Error detect → Analysis → Recovery guidance
+- **Performance**: Response tracking → Resource monitoring → Optimization
+- **Actions**: Quick restart → Cache clear → Configuration updates
+
+### **🧠 Strands Multi-Agent Workflow**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                           🔗 Strands Intelligence Orchestration                     │
+├─────────────────────┬─────────────────────┬─────────────────────┬─────────────────────┤
+│  🎨 Canvas Design   │  🤖 Agent Config    │  ⚡ Execution       │  📊 Monitoring      │
+│                     │                     │                     │                     │
+│ • Drag & Drop       │ • Role Assignment   │ • Workflow Start    │ • Real-time Status  │
+│ • Node Connections  │ • Tool Selection    │ • Parallel Proc     │ • Performance Logs  │
+│ • Flow Logic        │ • Reasoning Pattern │ • Error Handling    │ • Result Analysis   │
+│ • Template Library  │ • Model Binding     │ • State Management  │ • Export Results    │
+└─────────────────────┴─────────────────────┴─────────────────────┴─────────────────────┘
+
+📊 Flow: Design → Configure → Connect → Execute → Monitor → Analyze → Export
+```
+
+**User Journey:**
+- **Design**: Canvas → Drag agents → Connect nodes → Define flow
+- **Configure**: Agent roles → Tools → Reasoning patterns → Models
+- **Execute**: Start workflow → Monitor progress → Handle errors
+- **Results**: Real-time status → Performance analysis → Export data
+
+### **🏭 Industry-Specific Workflows**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                            🎯 Multi-Industry Platform Adaptation                    │
+├─────────────────────┬─────────────────────┬─────────────────────┬─────────────────────┤
+│  🏦 Banking Suite   │  🏭 Industrial      │  📱 Telco CVM       │  🔧 Custom Config   │
+│                     │                     │                     │                     │
+│ • Risk Analysis     │ • Forecasting       │ • Customer Value    │ • Theme Engine      │
+│ • Compliance Check  │ • Procurement       │ • Churn Prediction  │ • Content Switch    │
+│ • Fraud Detection   │ • Safety Monitor    │ • Revenue Optimize  │ • Workflow Templates│
+│ • Credit Scoring    │ • R&D Discovery     │ • Network Analytics │ • Industry Context  │
+└─────────────────────┴─────────────────────┴─────────────────────┴─────────────────────┘
+
+📊 Flow: Industry Select → Context Load → Theme Apply → Workflow Adapt → Execute
+```
+
+**Industry Adaptation:**
+- **Context Switching**: Industry selection → Theme application → Content adaptation
+- **Workflow Templates**: Pre-built industry workflows → Custom configurations
+- **Agent Specialization**: Industry-specific agents → Domain expertise → Compliance
+- **Data Integration**: Industry data sources → Specialized processing → Custom outputs
 
 ## 🎯 Component Interaction Patterns
 
