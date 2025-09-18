@@ -1,0 +1,6 @@
+[Strands SDK] Starting Simplified Strands SDK Agent Service...
+[Strands SDK] Port: 5006
+ * Serving Flask app 'strands_sdk_simple'
+ * Debug mode: on
+Address already in use
+Port 5006 is in use by another program. Either identify and stop that program, or start the server with a different port.
